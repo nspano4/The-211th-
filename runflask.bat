@@ -1,3 +1,3 @@
 set FLASK_APP=flaskr
-set FLASK_ELV=development
+set FLASK_ENV=development
 flask run
