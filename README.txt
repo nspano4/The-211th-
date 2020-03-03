@@ -19,7 +19,7 @@ To run the program on Windows
         http://127.0.0.1:5000/
 
 
-TO run the program on Mac/Linux
+To run the program on Mac/Linux
 
 	create the virtual environment
 		run 'virtualenv venv'
