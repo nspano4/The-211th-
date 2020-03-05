@@ -1,0 +1,43 @@
+<html>
+  <body>
+    <head>
+      <meta charset="utf-8" />
+      <title>Google stock history</title>
+      <link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" />
+      </head>
+
+    <div id="header">
+			<div id="logo">
+				<a href="home.html"><img src="../static/images/logo.jpg" alt="" /></a>
+			</div>		
+			<ul>
+				<li class="selected"><a href="{{ url_for('home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('amazon') }}"><span>amazon</span></a></li>
+				<li><a href="{{ url_for('google') }}"><span>google</span></a></li>
+				<li><a href="{{ url_for('microsoft') }}"><span>microsoft</span></a></li>
+			</ul>
+	</div>
+
+    <table style="width:100%">
+      <tr>
+        <th>Date</th>
+        <th>Open</th>
+        <th>Close</th>
+        <th>High</th>
+        <th>Low</th>
+      </tr>
+      {% for entry in google %}
+      
+      <tr>
+        <td>{{ entry.Date }}</td>
+        <td>{{ entry.Open }}</td>
+        <td>{{ entry.Close }}</td>
+        <td>{{ entry.High }}</td>
+        <td>{{ entry.Low }}</td>
+      </tr>
+      {% endfor %}
+    </table> 
+
+  
+  </body>
+</html>
