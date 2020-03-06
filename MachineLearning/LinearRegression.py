@@ -38,7 +38,7 @@ for _ in range(5000): # The greater the range, the greater the accuracy may be
             pickle.dump(linear, f)
         with open("Best.txt", "w") as g:
             g.write(str(best))
-
+# End of Training Portion
 '''
 # This section will test the current stock data with the model
 pickle_in = open("prediction.pickle", "rb")
@@ -54,4 +54,5 @@ print("-------------------------")
 predicted = linear.predict(x_test)
 for x in range(len(predicted)):
     print(predicted[x], y_test[x])
+# End of Testing portion 
     '''
