@@ -1,17 +1,20 @@
 # Script to retrieve data from our Azure Database
 
+import os
 import sys
 import json
 import pyodbc
+import configparser
 
-# SQL Database Connection
 server = 'tcp:sa-server.database.windows.net'
 database = 'StockAdviseDB'
 username = 'adminSA'
 password = 'stock-123'
+
+# SQL Database Connection
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};'
                       'SERVER='+ server +
-                      ';DATABASE='+database+
+                      ';DATABASE='+ database +
                       ';UID='+ username +
                       ';PWD='+ password)
 cursor = cnxn.cursor()

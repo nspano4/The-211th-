@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
 from call_database import return_stocks
 
+login = LoginManager(__app__)
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
