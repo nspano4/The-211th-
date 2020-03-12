@@ -1,6 +1,9 @@
 import os
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
+from call_database import return_stocks
+
+login = LoginManager(__app__)
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
@@ -40,6 +43,10 @@ def products():
 @app.route("/login")
 def login():
     return render_template("login.html")
+
+@app.route('/database')
+def database():
+    return return_stocks()
 
 if(__name__=="__main__"):
     #app.run(host=='0.0.0.0', port=5000)
