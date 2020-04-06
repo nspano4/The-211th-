@@ -20,34 +20,42 @@ try:
 except OSError:
     pass
 
+
 @app.route("/")
 def home():
     return render_template("home.html")
+
 
 @app.route("/about")
 def about():
     return render_template("about.html")
 
+
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
 
 @app.route("/services")
 def services():
     return render_template("services.html")
 
+
 @app.route("/products")
 def products():
     return render_template("products.html")
+
 
 @app.route("/login")
 def login():
     return render_template("login.html")
 
+
 @app.route('/database')
 def database():
     return return_stocks()
 
-if(__name__=="__main__"):
-    #app.run(host=='0.0.0.0', port=5000)
+
+if(name__=="__main__"):
+    # app.run(host=='0.0.0.0', port=5000)
     socketio.run(app, host='0.0.0.0', port=5000)
