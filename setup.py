@@ -6,6 +6,6 @@ setup(
         'flask',
         'flask_sqlalchemy',
         'flask-security',
-        'sklearn'
+        'sklearn', 'numpy', 'pandas'
     ]
 )
