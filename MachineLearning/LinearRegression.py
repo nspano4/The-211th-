@@ -18,10 +18,10 @@ def stockData():
             data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
             return data, 'GOOGL'
         elif str(stock).casefold() == 'AAPL'.casefold():
-            data = pd.read_csv("today.csv", sep=';')
+            data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
             return data, 'AAPL'
         elif str(stock).casefold() == 'MSFT'.casefold():
-            data = pd.read_csv("today.csv", sep=';')
+            data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
             return data, 'MSFT'
         else:
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
