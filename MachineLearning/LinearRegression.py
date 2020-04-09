@@ -5,6 +5,7 @@ from sklearn import linear_model
 import sklearn
 import pickle
 import datetime
+from call_database import *
 
 
 def stockData():
@@ -15,26 +16,29 @@ def stockData():
         print('MSFT')
         stock = input()
         if str(stock).casefold() == 'GOOGL'.casefold():
-            data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
+            pullTodaysStockData('GOOGL')
+            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
             return data, 'GOOGL'
         elif str(stock).casefold() == 'AAPL'.casefold():
-            data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
+            pullTodaysStockData('AAPL')
+            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
             return data, 'AAPL'
         elif str(stock).casefold() == 'MSFT'.casefold():
-            data = pd.read_csv("today.csv", sep=';') # pd.read_csv(....) (OR SOMETHING)
+            pullTodaysStockData('MSFT')
+            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
             return data, 'MSFT'
         else:
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
 
 def train():
-    data = pd.read_csv("^DJI.csv")
+    data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/^DJI.csv")
 
     data = data[["Open", "High", "Low", "Close", "Adj Close", "Volume"]]
 
     x = np.array(data.drop(["Close", "Adj Close"], 1))
     y = np.array(data["Close"])
 
-    with open("Best.txt", "r") as r:
+    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "r") as r:
         best_in = r.read()
     best = float(best_in)
     i = 0
@@ -50,22 +54,22 @@ def train():
         if acc >= best:
             best = acc
             print("Best: " + str(best))
-            with open("prediction.pickle", "wb") as f:
+            with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "wb") as f:
                 pickle.dump(linear, f)
-            with open("Best.txt", "w+") as g:
+            with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "w+") as g:
                 g.write(str(best))
 
 def test():
-    data, stock = stockData()#pd.read_csv("today.csv", sep=';')
-    print(stock)
-    data = data[["Open", "High", "Low", "Close", "Adj Close", "Volume"]]
+    data, stock = stockData()#pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=';')
 
-    x = np.array(data.drop(["Close", "Adj Close"], 1))
+    data = data[["Open", "High", "Low", "Close", "Volume"]]
+
+    x = np.array(data.drop(["Close"], 1))
     y = np.array(data["Close"])
     x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.1)
 
     # This section will test the current stock data with the model
-    pickle_in = open("prediction.pickle", "rb")
+    pickle_in = open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "rb")
     linear = pickle.load(pickle_in)
 
     print("-------------------------")
@@ -78,11 +82,11 @@ def test():
     for x in range(len(predicted)):
         if predicted[x] < 0:
             predicted[x] = -1 * predicted[x]
-        print(predicted[x], y_test[x])
+        print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
         currentDate = datetime.datetime.now().date()
         currentDate = str(currentDate)
-        print(currentDate)
-        with open('predicted_' + str(stock) + '.csv', mode='w') as predicted_file:
+        with open('C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/predicted_' + str(stock) + '.csv',
+                  mode='w') as predicted_file:
             fieldname = ['Date', 'Predicted Close']
             predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)
             predicted_writer.writeheader()
