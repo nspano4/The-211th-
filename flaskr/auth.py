@@ -15,7 +15,7 @@ login.init_app(app)
 
 @login.user_loader
 def load_user(user_id):
-   print()
+    print()
 
 
 # Verifies that the information entered is valid using regexes
@@ -46,34 +46,39 @@ def verify_information(firstname, lastname, username, email, password):
                     # Logic : anything that only contains
                     # alphabetic characters
                     # Length between 2 and 20
-                    if( re.fullmatch('d[A-Za-z]{2,20}', lastname) ) :
+                    if( re.fullmatch('[A-Za-z]{2,20}', lastname) ) :
                         print('Valid user account')
                         return True
     print('Invalid user account')
     return False
 
 
+'''
 # Verifies that the user account is available and creates the account if available
 def create_new_account(firstname, lastname, username, email, password):
     if(verify_information(firstname, lastname, username, email, password)):
-        print('Valid user information')
 
         # Insert the user into the database to create the user account
-        cursor.execute('INSERT INTO ' + os.getenv('DBNAME') + '.' + os.getenv('USERS')
-                        + ' (USER_ID,FIRST_NAME, LAST_NAME, EMAIL, USERNAME, PASS_HASH) VALUES '
-                        + '(\'' + str(uuid.uuid4()) + '\','
-                        + '(\'' + firstname + '\','
-                        + '(\'' + lastname + '\','
-                        + '(\'' + email + '\','
-                        + '(\'' + username + '\','
-                        + '(\'' + generate_password_hash(password) + '\')')
-
+        # Command is broken into multiple lines for readability
+        cursor.execute('INSERT INTO ' + os.getenv('DBNAME') + '.' + os.getenv('USERS') +
+                       ' (USER_ID, FIRST_NAME, LAST_NAME, EMAIL, USERNAME, PASS_HASH) VALUES ' +
+                       '(\'' + str(uuid.uuid4()) + '\',' +
+                       '(\'' + firstname + '\',' +
+                       '(\'' + lastname + '\',' +
+                       '(\'' + email + '\',' +
+                       '(\'' + username + '\',' +
+                       '(\'' + generate_password_hash(password) + '\')')
+'''
 
 # Validates that the entered password matches the stored hash value
 def login(password):
-    return check_password_hash(hash, test_pass)
+    if check_password_hash(hash, test_pass):
+        print('Good Password')
+    else:
+        print('Bad Password')
 
 
+'''
 # Demo for the mid-assessment
 def demo():
     print('Enter your firstname : ')
@@ -117,3 +122,4 @@ def regex_demo(firstname, lastname, username, email, password):
         print('Invalid lastname')
 
 demo()
+'''
