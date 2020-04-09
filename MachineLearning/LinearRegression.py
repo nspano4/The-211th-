@@ -60,7 +60,7 @@ def train():
                 g.write(str(best))
 
 def test():
-    data, stock = stockData()#pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=';')
+    data, stock = stockData()
 
     data = data[["Open", "High", "Low", "Close", "Volume"]]
 
