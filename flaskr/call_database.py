@@ -10,11 +10,6 @@ database = os.getenv('DBNAME')
 username = os.getenv('DBUSER')
 password = os.getenv('DBPASS')
 
-print(server)
-print(database)
-print(username)
-print(password)
-
 # SQL Database Connection
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};'
                       'SERVER='+ server +
@@ -27,7 +22,7 @@ cursor = cnxn.cursor()
 # All select statement retrieves data from our main historical data table
 main = "SELECT * FROM StockAdviseDB.dbo.MAIN;"
 stocks = "SELECT * FROM StockAdviseDB.dbo.StockID"
-users = "SELECT * FROM StockAdviseDB.dbo.Users"
+usersQuery = "SELECT * FROM StockAdviseDB.dbo.Users"
 emailQuery = "SELECT EMAIL FROM StockAdviseDB.dbo.Users"
 usernameQuery = "SELECT USERNAME FROM StockAdviseDB.dbo.Users"
 
@@ -65,3 +60,24 @@ def print_users():
     for row in fetch:
         print(row)
 
+
+# Check if the email is already in the database
+def check_email(email):
+    query = emailQuery + " WHERE EMAIL = " + email
+    cursor.execute(query)
+    cursor.fetchall()
+    if(cursor.rowcount > 0):
+        return False
+    else:
+        return True
+
+
+# Check if the email is already in the database
+def check_username(username):
+    query = username + " WHERE USERNAME = " + username
+    cursor.execute(query)
+    cursor.fetchall()
+    if(cursor.rowcount > 0):
+        return False
+    else:
+        return True
