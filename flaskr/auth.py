@@ -27,26 +27,26 @@ def verify_information(firstname, lastname, username, email, password):
     # This can accept wrong information at the end but it's a quick fix
     # Ex g@s.edu is valid
     # Max length 50
-    if( re.fullmatch("([A-Za-z0-9].*@..*\.(com|net|edu)){1,50}", email) ) :
+    if(re.fullmatch("([A-Za-z0-9].*@..*\.(com|net|edu)){10,50}", email) and check_email(email)):
         # validate the username
         # Logic : anything between 4 and 20 characters
         # and only alphanumeric characters including underscores
-        if( re.fullmatch('[A-Za-z0-9]{4,25}', username) ) :
+        if(re.fullmatch('[A-Za-z0-9]{4,25}', username) and check_username(username)):
             # validate the password
             # Logic : Alphanumeric characters
             # and select special characters
             # Between 7 and 20 characters
-            if( re.fullmatch( '[A-Za-z0-9_!@#$%^&*?]{7,20}', password) ):
+            if(re.fullmatch( '[A-Za-z0-9_!@#$%^&*?]{7,20}', password)):
                 # Validate the users first name
                 # Logic : anything that only contains
                 # alphabetic characters
                 # Length between 2 and 20
-                if( re.fullmatch('[a-zA-Z]{2,20}', firstname) ):
+                if(re.fullmatch('[a-zA-Z]{2,20}', firstname)):
                     # Validate the users last name
                     # Logic : anything that only contains
                     # alphabetic characters
                     # Length between 2 and 20
-                    if( re.fullmatch('[A-Za-z]{2,20}', lastname) ) :
+                    if(re.fullmatch('[A-Za-z]{2,20}', lastname)):
                         print('Valid user account')
                         return True
     print('Invalid user account')
@@ -72,11 +72,10 @@ def create_new_account(firstname, lastname, username, email, password):
 
 # Validates that the entered password matches the stored hash value
 def login(password):
-    if check_password_hash(hash, test_pass):
+    if check_password_hash(hash, password):
         print('Good Password')
     else:
         print('Bad Password')
-
 
 '''
 # Demo for the mid-assessment
@@ -92,7 +91,7 @@ def demo():
     print('Enter your a password: ')
     password = str(input())
     print()
-    regex_demo(firstname, lastname, username, email, password)
+    verify_information(firstname, lastname, username, email, password)
     test_hash = generate_password_hash(password)
     print('password hash demo  : ' + password + ' => ' + test_hash)
     print('UUID generator demo : ' + str(uuid.uuid4()))
@@ -100,11 +99,11 @@ def demo():
 
 # Demonstrate the regexes used for validating user account information
 def regex_demo(firstname, lastname, username, email, password):
-    if( re.fullmatch("([A-Za-z0-9].*@..*\.[cne][oed][mtu]){1,50}", email) ) :
+    if( re.fullmatch("([A-Za-z0-9].*@..*\.[cne][oed][mtu]){1,50}", email)) :
         print("Valid email")
     else:
         print('Invalid email')
-    if( re.fullmatch('[A-Za-z0-9]{4,25}', username) ) :
+    if( re.fullmatch('[A-Za-z0-9]{4,25}', username)) :
         print('Valid username')
     else:
         print('Invalid username')
@@ -120,6 +119,7 @@ def regex_demo(firstname, lastname, username, email, password):
         print('Valid lastname')
     else:
         print('Invalid lastname')
+
 
 demo()
 '''
