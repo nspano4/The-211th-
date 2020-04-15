@@ -50,6 +50,6 @@ def create_app(test_config=None):
 
     @app.route("/signup")
     def login():
-        return render_template("signup.html")
+        return render_template("register.html")
 
     return app

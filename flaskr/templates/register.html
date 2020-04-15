@@ -23,42 +23,36 @@
 	</div>
     <div class="container">
         <section id="content">
-            <form action="", method="post" novalidate>
+            <form action="", method="post">
                 <h1>Enter your information to</h1>
                 <h1>register</h1>
                 <div>
-                <div>
-                    <input type="text"
-                           placeholder="First Name"
-                           required=""
-                           id="firstname" />
+                    <!--firstname value for the form -->
+                    {{ form.firstname(placeholder="First name") }}
                 </div>
+
                 <div>
-                    <input type="text"
-                           placeholder="Last Name"
-                           required=""
-                           id="lastname" />
+                    <!--lastname value for the form -->
+                    {{ form.lastname(placeholder="Last name") }}
                 </div>
+
                 <div>
-                    <input type="text"
-                           placeholder="Email"
-                           required=""
-                           id="email" />
+                    <!--email value for the form -->
+                    {{ form.email(placeholder="Email") }}
                 </div>
-                    <input type="text"
-                           placeholder="Username"
-                           required=""
-                           id="username" />
-                </div>
+
                 <div>
-                    <input type="password"
-                           placeholder="Password"
-                           required=""
-                           id="password" />
+                    <!--username value for the form -->
+                    {{ form.username(placeholder="Username") }}
                 </div>
+
                 <div>
-                    <input type="submit"
-                           value="Register" />
+                    <!--password value for the form -->
+                    {{ form.password(placeholder="Password") }}
+                </div>
+
+                <div>
+                    {{ form.submit(placeholder ="Register") }}
                 </div>
             </form><!-- form -->
 
