@@ -48,4 +48,8 @@ def create_app(test_config=None):
     def login():
         return render_template("login.html")
 
+    @app.route("/signup")
+    def login():
+        return render_template("signup.html")
+
     return app
