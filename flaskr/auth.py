@@ -1,21 +1,11 @@
 # File for managing user login, creation and sessions
 
 from flask import Flask
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager
-import uuid
 import re
 from call_database import check_email, check_username
 
+
 app = Flask(__name__)
-
-login = LoginManager()
-
-login.init_app(app)
-
-@login.user_loader
-def load_user(user_id):
-    print()
 
 
 # Verifies that the information entered is valid using regexes
@@ -70,13 +60,6 @@ def create_new_account(firstname, lastname, username, email, password):
                        '(\'' + generate_password_hash(password) + '\')')
 '''
 
-# Validates that the entered password matches the stored hash value
-def login(password):
-    if check_password_hash(hash, password):
-        print('Good Password')
-    else:
-        print('Bad Password')
-
 '''
 # Demo for the mid-assessment
 def demo():
@@ -120,6 +103,6 @@ def regex_demo(firstname, lastname, username, email, password):
     else:
         print('Invalid lastname')
 
-
 demo()
 '''
+

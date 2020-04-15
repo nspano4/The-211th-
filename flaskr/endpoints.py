@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python -m
 
 import os
-from flask import Flask, render_template
-from flask_socketio import SocketIO, send, emit
+from flask import Flask, render_template, redirect, flash
+from flask_socketio import SocketIO
+from flaskr.forms import LoginForm, RegistrationForm
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
@@ -45,9 +46,38 @@ def products():
     return render_template("products.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    print("Login submit")
+    # Checks the the information in the form is valid
+    if(form.validate_on_submit()):
+        flash("Login request for user {}".format(form.username.data))
+        return redirect('/')
+    return render_template("login.html", form=form)
+
+
+# Dynamic route for gathering a single stock information
+@app.route("/stock/<symbol>")
+def stock_page():
+    return render_template()
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    print("Register submit")
+    # Checks that the information in the form is valid
+    if(form.validate_on_submit()):
+        flash('User {} registered'.format(form.username.data))
+        redirect('/')
+    # Passes the registration form to the page
+    return render_template("register.html", form=form)
+
+
+@app.route("/database")
+def sqlalchemy_check():
+    print()
 
 
 if(__name__=="__main__"):

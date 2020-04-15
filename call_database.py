@@ -5,6 +5,7 @@ import sys
 import json
 import pyodbc
 import csv
+from flask import Flask
 
 dir = os.getcwd()
 sep = os.path.sep
@@ -27,6 +28,7 @@ cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};' +
                       ';PWD=' + password)
 cursor = cnxn.cursor()
 
+app = Flask(__name__)
 
 # *************GET ALL DATA***************************************
 def pullAllData():
