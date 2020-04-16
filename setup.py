@@ -6,6 +6,10 @@ setup(
         'flask',
         'flask_sqlalchemy',
         'flask-security',
-        'sklearn', 'numpy', 'pandas'
+        'sklearn',
+        'numpy',
+        'pandas',
+        'pyodbc',
+        'flask-socketio'
     ]
 )
