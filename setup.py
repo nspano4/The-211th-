@@ -9,6 +9,7 @@ setup(
         'sklearn',
         'numpy',
         'pandas',
-        'pyodbc'
+        'pyodbc',
+        'flask-socketio'
     ]
 )

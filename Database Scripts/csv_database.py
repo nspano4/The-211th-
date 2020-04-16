@@ -1,17 +1,22 @@
 #Script to retreive data from our Azure Database and download as CSV
 
-import sys
-import json
+import os
 import csv
 import pyodbc
+import configparser
 
 
+config = configparser.ConfigParser()
+
+# Locates the database config file
+config.read(os.getcwd() + os.sep + "config.ini")
 
 #SQL Database Connection
-server = 'tcp:sa-server2.database.windows.net'
-database = 'StockAdviseDB'
-username = 'adminSA'
-password = 'stock-123'
+server = config.get('config', 'server')
+database = config.get('config', 'hostname')
+username = config.get('config', 'username')
+password = config.get('config', 'password')
+
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = cnxn.cursor()
 print(cursor)

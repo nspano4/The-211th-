@@ -11,6 +11,7 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_mapping(
     SECRET_KEY='dev',
     DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+    FLASK_ENV='development'
 )
 socketio = SocketIO(app, cors_allowed_origins='*')
 
@@ -55,12 +56,6 @@ def login():
         flash("Login request for user {}".format(form.username.data))
         return redirect('/')
     return render_template("login.html", form=form)
-
-
-# Dynamic route for gathering a single stock information
-@app.route("/stock/<symbol>")
-def stock_page():
-    return render_template()
 
 
 @app.route("/register", methods=['GET', 'POST'])
