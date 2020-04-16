@@ -69,15 +69,12 @@ def register():
     print("Register submit")
     # Checks that the information in the form is valid
     if(form.validate_on_submit()):
+        print("valid")
         flash('User {} registered'.format(form.username.data))
         redirect('/')
     # Passes the registration form to the page
+    print("invalid")
     return render_template("register.html", form=form)
-
-
-@app.route("/database")
-def sqlalchemy_check():
-    print()
 
 
 if(__name__=="__main__"):
