@@ -1,4 +1,3 @@
-import csv
 import numpy as np
 import pandas as pd
 from sklearn import linear_model
@@ -7,7 +6,14 @@ import pickle
 import datetime
 import random
 from call_database import *
+import os
 
+dir = os.getcwd()
+sep = os.path.sep
+
+# Dynamic path to the MachineLearning directory
+# Removes the need for hard-coding the path
+machineLearningDir = dir + sep + "MachineLearning" + sep
 
 def stockData(stock):
     while True:
@@ -17,29 +23,30 @@ def stockData(stock):
         #print('MSFT')
         #stock = input()
         if str(stock).casefold() == 'GOOGL'.casefold():
-            pullTodaysStockData('GOOGL')
-            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
+            database.pullTodaysStockData('GOOGL')
+            data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
             return data, 'GOOGL'
         elif str(stock).casefold() == 'AAPL'.casefold():
             pullTodaysStockData('AAPL')
-            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
+            data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
             return data, 'AAPL'
         elif str(stock).casefold() == 'MSFT'.casefold():
             pullTodaysStockData('MSFT')
-            data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
+            data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
             return data, 'MSFT'
         else:
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
 
 def train():
-    data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv")
+
+    data = pd.read_csv( machineLearningDir + "AllData.csv")
 
     data = data[["Open", "High", "Low", "Close", "Volume"]]
 
     x = np.array(data.drop(["Close"], 1))
     y = np.array(data["Close"])
 
-    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "r") as r:
+    with open(machineLearningDir + "Best.txt", "r") as r:
         best_in = r.read()
     best = float(best_in)
     i = 0
@@ -55,9 +62,9 @@ def train():
         if acc >= best:
             best = acc
             print("Best: " + str(best))
-            with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "wb") as f:
+            with open(machineLearningDir + "prediction.pickle", "wb") as f:
                 pickle.dump(linear, f)
-            with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "w+") as g:
+            with open(machineLearningDir + "Best.txt", "w+") as g:
                 g.write(str(best))
 
 def test(symbol):
@@ -70,7 +77,7 @@ def test(symbol):
     x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.4)
 
     # This section will test the current stock data with the model
-    pickle_in = open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "rb")
+    pickle_in = open(machineLearningDir + "prediction.pickle", "rb")
     linear = pickle.load(pickle_in)
 
     print("-------------------------")
@@ -86,7 +93,7 @@ def test(symbol):
         print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
         currentDate = datetime.datetime.now().date()
         currentDate = str(currentDate)
-        with open('C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/predicted_' + str(stock) + '.csv',
+        with open(machineLearningDir + 'predicted_' + str(stock) + '.csv',
                   mode='w') as predicted_file:
             fieldname = ['Date', 'Predicted Close']
             predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)

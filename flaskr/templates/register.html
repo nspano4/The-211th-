@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Business Solutions</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles/login.css" media="all" />
+</head>
+
+<body>
+
+	<div id="header">
+			<div id="logo">
+				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
+			</div>
+			<ul>
+				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('about') }}"><span>our team</span></a></li>
+				<li><a href="{{ url_for('services') }}"><span>top stocks</span></a></li>
+				<li><a href="{{ url_for('products') }}"><span>search</span></a></li>
+				<li class="selected"><a href="{{ url_for('login') }}"><span>login</span></a> </li>
+			</ul>
+	</div>
+    <div class="container">
+        <section id="content">
+            <form action="", method="post">
+                <h1>Enter your information to</h1>
+                <h1>register</h1>
+                <div>
+                    <!--firstname value for the form -->
+                    {{ form.firstname(placeholder="First name") }}
+                </div>
+
+                <div>
+                    <!--lastname value for the form -->
+                    {{ form.lastname(placeholder="Last name") }}
+                </div>
+
+                <div>
+                    <!--email value for the form -->
+                    {{ form.email(placeholder="Email") }}
+                </div>
+
+                <div>
+                    <!--username value for the form -->
+                    {{ form.username(placeholder="Username") }}
+                </div>
+
+                <div>
+                    <!--password value for the form -->
+                    {{ form.password(placeholder="Password") }}
+                </div>
+
+                <div>
+                    {{ form.submit(placeholder ="Register") }}
+                </div>
+            </form><!-- form -->
+
+        </section><!-- content -->
+    </div><!-- container -->
+
+</body>
+
+</html>
