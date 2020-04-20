@@ -44,11 +44,14 @@ def pullAllData():
     fetch = cursor.fetchall()
     cursor.commit()
 # #This iterates through all the rows of data and prints on console
-    for i in fetch:
-        # To get specific values from columns, index the lists
-        # For example, to get just the dates, print(i[2])
-        print(i)
-
+    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv", "w", newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',')
+        spamwriter.writerow({'Index,Stock,Date,Open,High,Low,Close,Volume'})
+        for i in fetch:
+            spamwriter.writerow(i)
+    csvfile.close()
+        #To get specific values from columns, index the lists
+        #For example, to get just the dates, print(i[2])
 
 # ****************GET DATA FOR A SINGLE STOCK**********************
 def pullTodaysStockData(symbol):
@@ -93,6 +96,7 @@ def pullAllStockData(symbol):
 
     with open(machineLearningDir + "testme.csv", "w", newline="") as csvfile:
         spamwriter = csv.writer(csvfile, delimiter= ';')
+
         for i in fetch:
             spamwriter.writerow(i)
         csvfile.close()
@@ -103,9 +107,10 @@ def pullAllStockData(symbol):
             spamreader = csv.reader(csvfile1, delimiter=';')
             spamwriter = csv.writer(csvfile2, delimiter=';')
             spamwriter.writerow({"Index,Stock,Date,Open,High,Low,Close,Volume"})
-            row1 = next(spamreader)
+
             for _ in spamreader:
-                stringRow1 = str(row1)
+                row = ','.join(_)
+                stringRow1 = str(row)
                 newString = stringRow1.replace("\'", "")
                 newString = newString.replace("[", "")
                 newString = newString.replace("]", "")
@@ -134,3 +139,12 @@ def check_username(username):
         return False
     else:
         return True
+
+#SQL Database Connection
+server = 'tcp:sa-server2.database.windows.net'
+database = 'StockAdviseDB'
+username = 'adminSA'
+password = 'stock-123'
+cnxn = pyodbc.connect(
+    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+cursor = cnxn.cursor()
