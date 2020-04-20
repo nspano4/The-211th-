@@ -12,10 +12,14 @@ def pullAllData():
     fetch = cursor.fetchall()
     cursor.commit()
 # #This iterates through all the rows of data and prints on console
-    for i in fetch:
+    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv", "w", newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',')
+        spamwriter.writerow({'Index,Stock,Date,Open,High,Low,Close,Volume'})
+        for i in fetch:
+            spamwriter.writerow(i)
+    csvfile.close()
         #To get specific values from columns, index the lists
         #For example, to get just the dates, print(i[2])
-        print(i)
 
 #****************GET DATA FOR A SINGLE STOCK**********************
 def pullTodaysStockData(symbol):
@@ -59,7 +63,7 @@ def pullAllStockData(symbol):
     cursor.commit()
 
     with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/testme.csv", "w", newline="") as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter= ';')
+        spamwriter = csv.writer(csvfile, delimiter=';')
         for i in fetch:
             spamwriter.writerow(i)
         csvfile.close()
@@ -70,13 +74,16 @@ def pullAllStockData(symbol):
             spamreader = csv.reader(csvfile1, delimiter=';')
             spamwriter = csv.writer(csvfile2, delimiter=';')
             spamwriter.writerow({"Index,Stock,Date,Open,High,Low,Close,Volume"})
-            row1 = next(spamreader)
+
             for _ in spamreader:
-                stringRow1 = str(row1)
+                row = ','.join(_)
+                stringRow1 = str(row)
                 newString = stringRow1.replace("\'", "")
                 newString = newString.replace("[", "")
                 newString = newString.replace("]", "")
                 spamwriter.writerow({newString})
+
+
 
 
 #SQL Database Connection

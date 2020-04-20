@@ -5,16 +5,17 @@ from sklearn import linear_model
 import sklearn
 import pickle
 import datetime
+import random
 from call_database import *
 
 
-def stockData():
+def stockData(stock):
     while True:
-        print('Please select one of the following:')
-        print('GOOGL')
-        print('AAPL')
-        print('MSFT')
-        stock = input()
+        #print('Please select one of the following:')
+        #print('GOOGL')
+        #print('AAPL')
+        #print('MSFT')
+        #stock = input()
         if str(stock).casefold() == 'GOOGL'.casefold():
             pullTodaysStockData('GOOGL')
             data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/today.csv", sep=',')
@@ -31,11 +32,11 @@ def stockData():
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
 
 def train():
-    data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/^DJI.csv")
+    data = pd.read_csv("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv")
 
-    data = data[["Open", "High", "Low", "Close", "Adj Close", "Volume"]]
+    data = data[["Open", "High", "Low", "Close", "Volume"]]
 
-    x = np.array(data.drop(["Close", "Adj Close"], 1))
+    x = np.array(data.drop(["Close"], 1))
     y = np.array(data["Close"])
 
     with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "r") as r:
@@ -43,7 +44,7 @@ def train():
     best = float(best_in)
     i = 0
     for _ in range(5000):  # The greater the range, the greater the accuracy may be
-        x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.1)
+        x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.6)
 
         linear = linear_model.LinearRegression()
 
@@ -59,14 +60,14 @@ def train():
             with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/Best.txt", "w+") as g:
                 g.write(str(best))
 
-def test():
-    data, stock = stockData()
+def test(symbol):
+    data, stock = stockData(symbol)
 
     data = data[["Open", "High", "Low", "Close", "Volume"]]
 
     x = np.array(data.drop(["Close"], 1))
     y = np.array(data["Close"])
-    x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.1)
+    x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.4)
 
     # This section will test the current stock data with the model
     pickle_in = open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "rb")
@@ -91,3 +92,73 @@ def test():
             predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)
             predicted_writer.writeheader()
             predicted_writer.writerow({'Date': currentDate, 'Predicted Close': predicted[x]})
+
+
+def predictValue(variable, symbol):
+    data, stock = stockData(symbol)
+
+    data = data[["Open", "High", "Low", "Close", "Volume"]]
+
+    x = np.array(data.drop([str(variable)], 1))
+    y = np.array(data[str(variable)])
+    x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.4)
+
+    # This section will test the current stock data with the model
+    pickle_in = open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "rb")
+    linear = pickle.load(pickle_in)
+
+    predicted = linear.predict(x_test)
+    for x in range(len(predicted)):
+        if predicted[x] < 0:
+            predicted[x] = -1 * predicted[x]
+        print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
+
+def tomorrowValues(symbol):
+    #temp, stock = pullAllStockData(symbol)
+    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/All" + str(symbol) + "Data.csv", "r",
+              newline="") as csvfile1:
+        spamreader = csv.reader(csvfile1, delimiter=',')
+        values = [row for idx, row in enumerate(spamreader) if idx in (1,0)]
+
+        tempValue = 0
+        for _ in range(0, 5):
+            j = random.randint(2, 5)
+            j = j * 0.01
+            i = (-1)**random.randrange(2)
+            tempValue = tempValue + float(values[1][6]) + ((float(values[1][6]) * j) * i)
+
+        predictOpen = str(tempValue / 5)
+        print("Predicted Open: " + predictOpen)
+        print(values[1][6])
+
+        #prevOpen = values[1][3]
+        prevHigh = float(values[1][4])
+        prevLow = float(values[1][5])
+        prevClose = float(values[1][6])
+        #prevVolume = values[1][7]
+
+        predictHigh = 0
+        predictLow = 0
+        print("Low: " + str(prevLow))
+        print("High: " + str(prevHigh))
+        print("Close: " + str(prevClose))
+
+        if min(prevLow, prevClose) == prevClose:
+            print('Low')
+            predictLow = prevLow - (abs(prevHigh - prevLow)) / 2
+            predictHigh = prevHigh - (abs(prevHigh - prevLow)) / 2
+        if (min(prevHigh, prevClose) == prevClose):
+            print('High')
+            predictLow = prevLow + (abs(prevHigh - prevLow)) / 2
+            predictHigh = prevHigh + (abs(prevHigh - prevLow)) / 2
+
+        print("Predicted Low: " + str(predictLow))
+        print("Predicted High: " + str(predictHigh))
+    csvfile1.close()
+
+    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/All" + str(symbol) + "DataPredicted.csv", "w",
+              newline="") as csvfile2:
+        spamwriter = csv.writer(csvfile2, delimiter=';')
+        spamwriter.writerow({"Open,High,Low,Close,Volume"})
+        spamwriter.writerow({str(predictOpen) + "," + str(predictHigh) + "," + str(predictLow) + ", 0, 0"})
+    csvfile2.close()
