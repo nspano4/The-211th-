@@ -37,6 +37,7 @@ def stockData(stock):
         else:
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
 
+
 def train():
 
     data = pd.read_csv( machineLearningDir + "AllData.csv")
@@ -66,6 +67,7 @@ def train():
                 pickle.dump(linear, f)
             with open(machineLearningDir + "Best.txt", "w+") as g:
                 g.write(str(best))
+
 
 def test(symbol):
     data, stock = stockData(symbol)
@@ -111,7 +113,7 @@ def predictValue(variable, symbol):
     x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.4)
 
     # This section will test the current stock data with the model
-    pickle_in = open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/prediction.pickle", "rb")
+    pickle_in = open(machineLearningDir + "prediction.pickle", "rb")
     linear = pickle.load(pickle_in)
 
     predicted = linear.predict(x_test)
@@ -120,9 +122,10 @@ def predictValue(variable, symbol):
             predicted[x] = -1 * predicted[x]
         print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
 
+
 def tomorrowValues(symbol):
     #temp, stock = pullAllStockData(symbol)
-    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/All" + str(symbol) + "Data.csv", "r",
+    with open(machineLearningDir + "All" + str(symbol) + "Data.csv", "r",
               newline="") as csvfile1:
         spamreader = csv.reader(csvfile1, delimiter=',')
         values = [row for idx, row in enumerate(spamreader) if idx in (1,0)]
@@ -163,7 +166,7 @@ def tomorrowValues(symbol):
         print("Predicted High: " + str(predictHigh))
     csvfile1.close()
 
-    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/All" + str(symbol) + "DataPredicted.csv", "w",
+    with open(machineLearningDir + "All" + str(symbol) + "DataPredicted.csv", "w",
               newline="") as csvfile2:
         spamwriter = csv.writer(csvfile2, delimiter=';')
         spamwriter.writerow({"Open,High,Low,Close,Volume"})

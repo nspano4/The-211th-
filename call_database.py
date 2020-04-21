@@ -44,7 +44,7 @@ def pullAllData():
     fetch = cursor.fetchall()
     cursor.commit()
 # #This iterates through all the rows of data and prints on console
-    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv", "w", newline='') as csvfile:
+    with open(machineLearningDir + "AllData.csv", "w", newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')
         spamwriter.writerow({'Index,Stock,Date,Open,High,Low,Close,Volume'})
         for i in fetch:
@@ -139,12 +139,3 @@ def check_username(username):
         return False
     else:
         return True
-
-#SQL Database Connection
-server = 'tcp:sa-server2.database.windows.net'
-database = 'StockAdviseDB'
-username = 'adminSA'
-password = 'stock-123'
-cnxn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
-cursor = cnxn.cursor()

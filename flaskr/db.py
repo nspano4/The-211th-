@@ -1,14 +1,19 @@
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask import Flask
+from flaskr.config import Config
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
 # Database model for the User entries
 class User(db.Model):
+    __tablename__ = 'Users'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(20))
     last_name = db.Column(db.String(30))
@@ -35,6 +40,7 @@ class User(db.Model):
 
 # Database entries for the daily stock report entries
 class StockEntryDay(db.Model):
+    __tablename__ = 'MAIN'
     stock_id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String(6))
     date = db.Column(db.String(10))
@@ -71,13 +77,15 @@ class StockEntryDay(db.Model):
 
 
 # Database model for the stock entries
-class Stock(db.Model):
-    stock_id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.String(6))
+class StockID(db.Model):
+    __tablename__ = 'StockID'
+    STOCK_ID = db.Column(db.Integer, primary_key=True)
+    SYMBOL = db.Column(db.String(6))
 
     # Functions to return values
     def get_stock_id(self):
-        return self.stock_id
+        return self.STOCK_ID
 
     def get_symbol(self):
-        return self.symbol
+        return self.SYMBOL
+
