@@ -1,48 +1,54 @@
 
 from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
+from flask_sqlalchemy import SQLAlchemy
 import uuid
-from flaskr import db
-
 from flaskr.forms import LoginForm, RegistrationForm
 from flaskr.db import User
 from werkzeug.security import generate_password_hash
+from flaskr import db
+
 import os
 
 app = Flask(__name__)
 sep = os.path.sep
 
+
+
+db = SQLAlchemy(app)
+
+# Defines all the routes for the website
 routes = Blueprint('routes', __name__)
 
 # Home page route
-@app.route("/")
+@routes.route("/")
 def home():
-    print(db.session.query(User).first())
+    print(User.query.first().first_name)
     return render_template("home.html")
 
 
-@app.route("/about")
+@routes.route("/about")
 def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@routes.route("/contact")
 def contact():
     return render_template("contact.html")
 
 
-@app.route("/services")
+@routes.route("/services")
 def services():
     return render_template("services.html")
 
 
 # Route for the products page
-@app.route("/products")
+@routes.route("/products")
 def products():
     return render_template("products.html")
 
 
 # Route for the login page
-@app.route("/login", methods=['GET', 'POST'])
+@routes.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
     # If the user is trying to log in
@@ -61,7 +67,7 @@ def login():
 
 
 # Route for the register page
-@app.route("/register", methods=['GET', 'POST'])
+@routes.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
     # If the user is trying to register
@@ -92,22 +98,20 @@ def register():
 
 
 # Route for 500 errors
-@app.errorhandler(500)
+@routes.errorhandler(500)
 def database_error(e):
     return "500 Error page"
 
 
 # Route for 404 errors
-@app.errorhandler(404)
+@routes.errorhandler(404)
 def page_not_found(e):
     return "404 Error page"
 
-@app.route('/add/<user:id>')
+@routes.route('/add/')
 def add_user(form):
     print('Add user endpoint in development')
 
-@app.route('/delete/<user:id>')
+@routes.route('/delete/')
 def delete_user():
     print('Delete user endpoint in development')
-
-

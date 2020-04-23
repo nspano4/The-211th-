@@ -1,4 +1,7 @@
+from flask import Flask
 from flaskr import db
+
+app = Flask(__name__)
 
 # Database model for the User entries
 class User(db.Model):
@@ -26,9 +29,10 @@ class User(db.Model):
     def get(self):
         return self
 
-def load_user(user_id):
-    return User.query.get(user_id)
 
+# def load_user(user_id):
+#     return User.query.get(user_id)
+#
 #
 # # Database entries for the daily stock report entries
 # class StockEntry(db.Model):

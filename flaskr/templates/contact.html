@@ -12,12 +12,12 @@
 				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
 			</div>		
 			<ul>
-				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('about') }}"><span>about us</span></a></li>
-				<li><a href="{{ url_for('services') }}"><span>services</span></a></li>
-				<li><a href="{{ url_for('products') }}"><span>products</span></a></li>
-				<li  class="selected"><a href="{{ url_for('contact')}}"><span>contact us</span></a></li>
-				<li><a href="{{ url_for('login') }}"><span>login</span></a> </li>
+				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('routes.about') }}"><span>about us</span></a></li>
+				<li><a href="{{ url_for('routes.services') }}"><span>services</span></a></li>
+				<li><a href="{{ url_for('routes.products') }}"><span>products</span></a></li>
+				<li  class="selected"><a href="{{ url_for('routes.contact')}}"><span>contact us</span></a></li>
+				<li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
 			</ul>
 	</div>
 	<div id="body">
