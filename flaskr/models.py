@@ -1,5 +1,6 @@
 from flask import Flask
-from flaskr import db
+from flaskr import db, login_manager
+from flask_login import current_user, login_required
 
 app = Flask(__name__)
 
@@ -30,10 +31,11 @@ class User(db.Model):
         return self
 
 
-# def load_user(user_id):
-#     return User.query.get(user_id)
-#
-#
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
 # # Database entries for the daily stock report entries
 # class StockEntry(db.Model):
 #     __tablename__ = 'StockEntry'

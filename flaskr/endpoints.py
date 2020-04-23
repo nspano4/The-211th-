@@ -1,11 +1,12 @@
 
 from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 import uuid
 from flaskr.forms import LoginForm, RegistrationForm
-from flaskr.db import User
-from werkzeug.security import generate_password_hash
-from flaskr import db
+from flask_login import current_user, login_required
+from flaskr.models import User
+from flaskr.auth import verify_information, regex_demo
 
 import os
 
@@ -22,7 +23,7 @@ routes = Blueprint('routes', __name__)
 # Home page route
 @routes.route("/")
 def home():
-    print(User.query.first().first_name)
+    # print(User.query.first().first_name)
     return render_template("home.html")
 
 
@@ -52,18 +53,20 @@ def products():
 def login():
     form = LoginForm(request.form)
     # If the user is trying to log in
-    if(request.method == 'POST'):
+    if(form.validate_on_submit()):
         print('Login request')
         # Checks the the information in the form is valid
-        if(form.validate_on_submit()):
-            print('valid')
-            flash("Login request for user {}".format(form.username.data))
-            return redirect(url_for('home'))
-        print('invalid')
-        return render_template("home.html", form=form)
+        flash("Login request for user {}".format(form.username.data))
+        return redirect(url_for('home'))
     # If the user is opening the webpage
     else:
         return render_template("login.html", form=form)
+
+
+@routes.route('/logout')
+@login_required
+def logout():
+    print('Logout endpoint in development')
 
 
 # Route for the register page
@@ -71,24 +74,30 @@ def login():
 def register():
     form = RegistrationForm(request.form)
     # If the user is trying to register
-    if(request.method == 'POST'):
+    if(form.validate_on_submit()):
         print('Register request')
+        regex_demo(form.firstname.data,
+                   form.lastname.data,
+                   form.username.data,
+                   form.email.data,
+                   form.password.data)
         # Checks that the information in the form is valid
-        if(form.validate_on_submit()):
-            print("valid")
-            try:
-                # Add the user account into the database
-                db.session.add(User(id=uuid.uuid3(),
-                                    first_name=form.firstname,
-                                    last_name=form.lastname,
-                                    email=form.email,
-                                    username=form.username,
-                                    pass_hash=generate_password_hash(form.password)))
-                db.session.commit()
-                flash('User {} registered'.format(form.username.data))
-                return redirect(url_for('login'))
-            except:
-                return "There was am issue registering you"
+        print("valid")
+        try:
+            # Add the user account into the database
+            # db.session.add(User(id=uuid.uuid3(),
+            #                     first_name=form.firstname,
+            #                     last_name=form.lastname,
+            #                     email=form.email,
+            #                     username=form.username,
+            #                     pass_hash=generate_password_hash(form.password)))
+            # db.session.commit()
+            flash('User {} registered'.format(form.username.data))
+            return redirect(url_for('login'))
+        except exc.IntegrityError:
+            return 'Some of the information entered clashes with the information in our database'
+        except:
+            return "There was an issue getting you registered"
         print("invalid")
         flash("Invalid user account")
         return render_template("register.html", form=form)
@@ -108,10 +117,17 @@ def database_error(e):
 def page_not_found(e):
     return "404 Error page"
 
+
+# Route for registering a user
 @routes.route('/add/')
 def add_user(form):
     print('Add user endpoint in development')
+    return'Add user endpoint in development'
 
+
+# Route for deleting a user
 @routes.route('/delete/')
+@login_required
 def delete_user():
     print('Delete user endpoint in development')
+    return'Delete user endpoint in development'
