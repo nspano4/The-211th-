@@ -2,7 +2,6 @@
 
 from flask import Flask
 import re
-from call_database import check_email, check_username
 
 
 app = Flask(__name__)

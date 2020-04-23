@@ -1,31 +1,22 @@
-from flask import Flask, render_template, redirect, flash, request, url_for
-from flask_socketio import SocketIO
+
+from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
+import uuid
+from flaskr import db
+
 from flaskr.forms import LoginForm, RegistrationForm
-from flaskr.db import db
+from flaskr.db import User
+from werkzeug.security import generate_password_hash
 import os
-from flaskr.config import Config
 
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__)
 sep = os.path.sep
-app.config.from_object(Config)
 
-socketio = SocketIO(app, cors_allowed_origins='*')
-
-# ensure the instance folder exists
-try:
-    os.makedirs(app.instance_path)
-except OSError:
-    pass
-
-# Checks that the database is created
-if not (os.path.exists(os.getcwd() + sep + 'flaskr' + sep + 'database.db')):
-    print(1)
-    db.create_all()
-    print(2)
+routes = Blueprint('routes', __name__)
 
 # Home page route
 @app.route("/")
 def home():
+    print(db.session.query(User).first())
     return render_template("home.html")
 
 
@@ -54,6 +45,7 @@ def products():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
+    # If the user is trying to log in
     if(request.method == 'POST'):
         print('Login request')
         # Checks the the information in the form is valid
@@ -62,7 +54,8 @@ def login():
             flash("Login request for user {}".format(form.username.data))
             return redirect(url_for('home'))
         print('invalid')
-        return render_template("login.html", form=form)
+        return render_template("home.html", form=form)
+    # If the user is opening the webpage
     else:
         return render_template("login.html", form=form)
 
@@ -71,15 +64,29 @@ def login():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
+    # If the user is trying to register
     if(request.method == 'POST'):
         print('Register request')
         # Checks that the information in the form is valid
         if(form.validate_on_submit()):
             print("valid")
-            flash('User {} registered'.format(form.username.data))
-            return redirect(url_for('login'))
+            try:
+                # Add the user account into the database
+                db.session.add(User(id=uuid.uuid3(),
+                                    first_name=form.firstname,
+                                    last_name=form.lastname,
+                                    email=form.email,
+                                    username=form.username,
+                                    pass_hash=generate_password_hash(form.password)))
+                db.session.commit()
+                flash('User {} registered'.format(form.username.data))
+                return redirect(url_for('login'))
+            except:
+                return "There was am issue registering you"
         print("invalid")
+        flash("Invalid user account")
         return render_template("register.html", form=form)
+    # If the user is visiting the webpage
     else:
         return render_template("register.html", form=form)
 
@@ -95,6 +102,12 @@ def database_error(e):
 def page_not_found(e):
     return "404 Error page"
 
-if(__name__=="__main__"):
-    # app.run(host=='0.0.0.0', port=5000)
-    socketio.run(app, host='127.0.0.1', port=5000)
+@app.route('/add/<user:id>')
+def add_user(form):
+    print('Add user endpoint in development')
+
+@app.route('/delete/<user:id>')
+def delete_user():
+    print('Delete user endpoint in development')
+
+

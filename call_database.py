@@ -115,27 +115,3 @@ def pullAllStockData(symbol):
                 newString = newString.replace("[", "")
                 newString = newString.replace("]", "")
                 spamwriter.writerow({newString})
-
-
-# Check if the email is already in the database
-# Used in auth.py for verification
-def check_email(email):
-    query = "SELECT EMAIL FROM StockAdviseDB.dbo.Users WHERE EMAIL=" + email
-    cursor.execute(query)
-    cursor.fetchall()
-    if(cursor.rowcount > 0):
-        return False
-    else:
-        return True
-
-
-# Check if the email is already in the database
-# Used in auth.py for verification
-def check_username(username):
-    query =  "SELECT USERNAME FROM StockAdviseDB.dbo.Users WHERE USERNAME=" + username
-    cursor.execute(query)
-    cursor.fetchall()
-    if(cursor.rowcount > 0):
-        return False
-    else:
-        return True
