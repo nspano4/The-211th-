@@ -6,6 +6,7 @@ from flask_socketio import SocketIO
 from flaskr.forms import LoginForm, RegistrationForm
 import pyodbc
 import json
+from configparser import ConfigParser
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
@@ -18,16 +19,26 @@ app.config.from_mapping(
 )
 socketio = SocketIO(app, cors_allowed_origins='*')
 
+config = ConfigParser()
+
+# Locates the database config file
+config.read(os.getcwd() + "/config.ini")
+
+# Reads the SQL database information from the config file
+server = config.get('config', 'server')
+database = config.get('config', 'hostname')
+username = config.get('config', 'username')
+password = config.get('config', 'password')
+
 
 ### CODE FOR CALLING DB AND PARSING INTO JSON OBJECT TO BE PASSED INTO JAVASCRIPT ###
 
-#Call Database For MSFT Data
-server = 'tcp:sa-server2.database.windows.net'
-database = 'StockAdviseDB'
-username = 'adminSA'
-password = 'stock-123'
 cnxn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    'DRIVER={ODBC Driver 17 for SQL Server}'
+    ';SERVER=' + server +
+    ';DATABASE=' + database +
+    ';UID=' + username +
+    ';PWD=' + password)
 cursor = cnxn.cursor()
 
 data = []

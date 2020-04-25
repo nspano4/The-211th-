@@ -18,7 +18,7 @@ def schedule():
     currentMinute = datetime.datetime.now().minute
     currentSecond = datetime.datetime.now().second
     datetime.datetime(int(year), int(month), int(day),
-        currentHour, currentMinute, currentSecond)
+                      currentHour, currentMinute, currentSecond)
     currentDay = datetime.datetime.today().weekday()
 
     if currentDay == calendar.FRIDAY:
