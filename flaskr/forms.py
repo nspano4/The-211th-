@@ -34,4 +34,4 @@ class RegistrationForm(FlaskForm):
         InputRequired(message='Last Name is required'),
         # Regexp('[A-Za-z]{2,20}')
     ])
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Register')

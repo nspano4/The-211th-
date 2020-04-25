@@ -74,7 +74,7 @@ def logout():
 def register():
     form = RegistrationForm(request.form)
     # If the user is trying to register
-    if(form.validate_on_submit()):
+    if( form.validate_on_submit() ):
         print('Register request')
         regex_demo(form.firstname.data,
                    form.lastname.data,
