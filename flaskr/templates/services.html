@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!-- Template by freewebsitetemplates.com -->
+<html>
+<head>
+<meta charset="utf-8" />
+	<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+</style>
+
+<title>Stock Advise - Top Weekly Stocks</title>
+<link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" />
+
+</head>
+
+<body>
+	<div id="header">
+			<div id="logo">
+				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
+			</div>		
+			<ul>
+				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('about') }}"><span>our team</span></a></li>
+				<li class="selected"><a href="{{ url_for('services') }}"><span>Top Stocks</span></a></li>
+				<li><a href="{{ url_for('products') }}"><span>search</span></a></li>
+				<li><a href="{{ url_for('login') }}"><span>login</span></a> </li>
+			</ul>
+	</div>
+
+	<div id="body">
+		<div class="services">
+			<h1>Stock Data and Predictions</h1>
+
+<div>
+    <label for="stocks">Stock:</label>
+
+    <select id="stock">
+         <option value="msft">MSFT</option>
+         <option value="aapl">AAPL</option>
+         <option value="googl">GOOGL</option>
+    </select>
+</div>
+
+<div id="option">
+    <input name="updateButton"
+           type="button"
+           value="Update"
+           onclick="updateData()" />
+</div>
+
+<!-- load the d3.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+	<script>
+
+	//Datasets pulled from DB
+	var url_MSFT = "https://raw.githubusercontent.com/nspano4/The-211th-/master/Database%20Scripts/MSFT.csv"
+	var url_AAPL = "https://raw.githubusercontent.com/nspano4/The-211th-/master/Database%20Scripts/AAPL.csv"
+	var url_GOOGL = "https://raw.githubusercontent.com/nspano4/The-211th-/master/Database%20Scripts/GOOGL.csv"
+
+	// Set the dimensions of the canvas / graph
+	var margin = {top: 30, right: 20, bottom: 30, left: 50},
+		width = 750 - margin.left - margin.right,
+		height = 300 - margin.top - margin.bottom;
+
+	// Parse the date / time
+	var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+	// Set the ranges
+	var x = d3.time.scale().range([0, width]);
+	var y = d3.scale.linear().range([height, 0]);
+
+	// Define the axes
+	var xAxis = d3.svg.axis().scale(x)
+		.orient("bottom").ticks(5);
+
+	var yAxis = d3.svg.axis().scale(y)
+		.orient("left").ticks(5);
+
+	// Define the line
+	var valueline = d3.svg.line()
+		.x(function(d) { return x(d.date); })
+		.y(function(d) { return y(d.close); });
+
+	// Adds the svg canvas
+	var svg = d3.select("body")
+		.append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+			.attr("transform",
+				  "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+	// Get the data
+	d3.csv(url_MSFT, function(error, data) {
+		data.forEach(function(d) {
+			d.date = parseDate(d.date);
+			d.close = +d.close;
+		});
+
+		// Scale the range of the data
+		x.domain(d3.extent(data, function(d) { return d.date; }));
+		y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+		//Add Title
+		svg.append("text")
+			.attr("class", "title")
+			  .attr("x", (width / 2))
+			  .attr("y", 0 - (margin.top / 2))
+			  .attr("text-anchor", "middle")
+			  .style("font-size", "16px")
+			  .style("text-decoration", "underline")
+			  .text("Stock Closing Value vs Date");
+
+		// Add the valueline path.
+		svg.append("path")
+			.attr("class", "line")
+			.attr("d", valueline(data));
+
+		// Add the X Axis
+		svg.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xAxis);
+
+		// Add the Y Axis
+		svg.append("g")
+			.attr("class", "y axis")
+			.call(yAxis);
+
+	});
+
+	// ** Update data section (Called from the onclick)
+	function updateData() {
+
+		dataset = document.getElementById("stock");
+		value = dataset.options[dataset.selectedIndex].value;
+
+		if (value == 'msft'){
+			var url = url_MSFT;
+		} else if (value == 'aapl'){
+			var url = url_AAPL;
+		} else if (value == 'googl'){
+			var url = url_GOOGL;
+		}
+
+		// ohlc = document.getElementById("ohlc");
+		// selected_ohlc = ohlc.options[ohlc.selectedIndex].value;
+		// console.log(selected_ohlc);
+
+		// Get the data again
+		d3.csv(url, function(error, data) {
+			data.forEach(function(d) {
+				d['date'] = parseDate(d['date']);
+				d['close'] = +d['close'];
+			});
+
+			// Scale the range of the data again
+			x.domain(d3.extent(data, function(d) { return d['date']; }));
+			y.domain([0, d3.max(data, function(d) { return d['close']; })]);
+
+		// Select the section we want to apply our changes to
+		var svg = d3.select("body").transition();
+
+		// Make the changes
+		//Add Title
+			svg.select(".title")
+
+			svg.select(".line")   // change the line
+				.duration(750)
+				.attr("d", valueline(data));
+			svg.select(".x.axis") // change the x axis
+				.duration(750)
+				.call(xAxis);
+			svg.select(".y.axis") // change the y axis
+				.duration(750)
+				.call(yAxis);
+
+		});
+	}
+
+	</script>
+
+
+	</body>
+
+	<div>
+		Data: {{data}}
+	</div>
+</html>
