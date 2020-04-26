@@ -76,11 +76,6 @@ def register():
     # If the user is trying to register
     if( form.validate_on_submit() ):
         print('Register request')
-        regex_demo(form.firstname.data,
-                   form.lastname.data,
-                   form.username.data,
-                   form.email.data,
-                   form.password.data)
         # Checks that the information in the form is valid
         print("valid")
         try:

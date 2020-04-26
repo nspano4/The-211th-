@@ -4,8 +4,7 @@ import os
 import pyodbc
 import csv
 from flask import Flask
-import configparser
-
+from configparser import ConfigParser
 # OS file separator
 sep = os.path.sep
 # Root directory
@@ -15,7 +14,7 @@ root = os.getcwd()
 # Removes the need for hard-coding the path
 machineLearningDir = root + sep + "MachineLearning" + sep
 
-config = configparser.ConfigParser()
+config = ConfigParser()
 
 # Locates the database config file
 config.read(root + sep + "config.ini")

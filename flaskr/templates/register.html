@@ -15,7 +15,7 @@
 			</div>
 			<ul>
 				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+                <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
 				<li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
 				<li><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
 				<li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
@@ -24,6 +24,7 @@
     <div class="container">
         <section id="content">
             <form action="", method="post">
+                {{ form.csrf_token }}
                 <h1>Enter your information to</h1>
                 <h1>register</h1>
                 <div>
