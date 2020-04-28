@@ -45,7 +45,7 @@ def products():
 def login():
     # redirect to the home page if the user is already logged in
     if( current_user.is_authenticated ):
-        return redirect(url_for('home'))
+        return redirect(url_for('routes.home'))
     form = LoginForm(request.form)
     # If the user is trying to log in
     if( form.validate_on_submit() ):
@@ -55,11 +55,11 @@ def login():
         # If the user is not found or the password is incorrect
         if( user is None or not user.check_password(form.password.data) ):
             flash('Invalid user information')
-            return redirect(url_for('login'))
+            return redirect(url_for('routes.login'))
         # Log in the user (Only reaches here if the information is valid)
         flash("Login request for user {}".format(form.username.data))
         login_user(user)
-        return redirect(url_for('home'))
+        return redirect(url_for('routes.home'))
     # If the user is opening the webpage
     else:
         return render_template("login.html", form=form)
@@ -72,15 +72,15 @@ def logout():
     # Skip step if the user isn't logged in
     if( current_user.is_authenticated ):
         logout_user()
-    redirect(url_for('home'))
     print('Logout endpoint in development')
+    return render_template(url_for('routes.home'))
 
 
 # Route for the register page
 @routes.route("/register", methods=['GET', 'POST'])
 def register():
     if( current_user.is_authenticated ):
-        return redirect(url_for('home'))
+        return redirect(url_for('routes.home'))
     form = RegistrationForm(request.form)
     # If the user is trying to register
     if( form.validate_on_submit() ):
@@ -88,28 +88,32 @@ def register():
         # Checks that the information in the form is valid
         valid = True
 
-        if(check_for_dup_email(form.email.data)):
-            valid = False
-            flash('That email is already taken')
-        if(check_for_dup_username(form.username.data)):
-            valid = False
-            flash('That username is already taken')
-        if(valid):
-            try:
-                user = User(first_name=form.firstname.data,
-                            last_name=form.lastname.data,
-                            email=form.email.data,
-                            username=form.username.data,
-                            pass_hash=generate_password_hash(form.password.data))
-                # Add the user account into the database
-                db.session.add(user)
-                # db.session.commit()
-                flash('User {} registered'.format(form.username.data))
-                db.session.commit()
-                return redirect(url_for('login'))
-            except:
-                return "There was an issue getting you registered"
-                return render_template("register.html", form=form)
+        # if(check_for_dup_email(form.email.data)):
+        #     valid = False
+        #     flash('That email is already taken')
+        # if(check_for_dup_username(form.username.data)):
+        #     valid = False
+        #     flash('That username is already taken')
+        # if(valid):
+        try:
+            user = User(first_name=form.firstname.data,
+                        last_name=form.lastname.data,
+                        email=form.email.data,
+                        username=form.username.data,
+                        pass_hash=generate_password_hash(form.password.data))
+            print('User Init')
+            # Add the user account into the database
+            db.session.add(user)
+            print('db add')
+            # db.session.commit()
+            flash('User {} registered'.format(form.username.data))
+            print('flash')
+            db.session.commit()
+            print('db commit')
+            return redirect(url_for('routes.login'))
+        except:
+            return "There was an issue getting you registered"
+            # return render_template("register.html", form=form)
     # If the user is visiting the webpage
     else:
         return render_template("register.html", form=form)
@@ -142,19 +146,19 @@ def delete_user():
     return'Delete user endpoint in development'
 
 
-#Checks to see if there are duplicate emails
-def check_for_dup_email(email):
-    if(db.session.filter_by(email=email).first() == None):
-        # Invalid information
-        return True
-    #Valid information
-    return False
-
-#Checks to see if there are duplicate emails
-def check_for_dup_username(username):
-    print()
-    if(User.query.filter_by(username=username).first_or_404() == None):
-        # Invalid information
-        return True
-    #Valid information
-    return False
+# #Checks to see if there are duplicate emails
+# def check_for_dup_email(email):
+#     if(db.session.query().filter_by(email=email).first_or_404() == None):
+#         # Invalid information
+#         return True
+#     #Valid information
+#     return False
+#
+# #Checks to see if there are duplicate emails
+# def check_for_dup_username(username):
+#     print()
+#     if(User.query.filter_by(username=username).first_or_404() == None):
+#         # Invalid information
+#         return True
+#     #Valid information
+#     return False

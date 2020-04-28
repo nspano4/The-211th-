@@ -13,8 +13,10 @@ def create_app():
     # Points where to look for the database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
     # Tells the app to not track all the modifications to the database
-    app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.urandom(32)
+
+    db.init_app(app)
 
     # Initialize the login for the users
     from flaskr.models import load_user
