@@ -8,17 +8,23 @@
 </head>
 <body>
 	<div id="header">
-			<div id="logo">
-				<a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
-			</div>		
-			<ul>
-				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('routes.about') }}"><span>about us</span></a></li>
-				<li><a href="{{ url_for('routes.services') }}"><span>services</span></a></li>
-				<li><a href="{{ url_for('routes.products') }}"><span>products</span></a></li>
-				<li><a href="{{ url_for('routes,contact') }}"><span>contact us</span></a></li>
-				<li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
-			</ul>
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>about us</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>services</span></a></li>
+            <li><a href="{{ url_for('routes.products') }}"><span>products</span></a></li>
+            <li><a href="{{ url_for('routes,contact') }}"><span>contact us</span></a></li>
+            <!--If the user is logged in the profile button shows-->
+            <!--Else show the login button-->
+            {% if current_user.is_authenticates%}
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+            {% else  %}
+                <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+            {% endif %}
+        </ul>
 	</div>
 	<div id="body">
 		<div class="blog">

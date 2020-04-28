@@ -1,29 +1,21 @@
 
 from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
-import uuid
 from flaskr.forms import LoginForm, RegistrationForm
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_user, logout_user
 from flaskr.models import User
-from flaskr.auth import verify_information, regex_demo
-
+from werkzeug.security import generate_password_hash
+from flaskr import login_manager, db
 import os
 
-app = Flask(__name__)
 sep = os.path.sep
 
-
-
-db = SQLAlchemy(app)
 
 # Defines all the routes for the website
 routes = Blueprint('routes', __name__)
 
-# Home page route
+# Home page endpoint
 @routes.route("/")
 def home():
-    # print(User.query.first().first_name)
     return render_template("home.html")
 
 
@@ -48,54 +40,76 @@ def products():
     return render_template("products.html")
 
 
-# Route for the login page
+# Endpoint for the login page and user login
 @routes.route("/login", methods=['GET', 'POST'])
 def login():
+    # redirect to the home page if the user is already logged in
+    if( current_user.is_authenticated ):
+        return redirect(url_for('home'))
     form = LoginForm(request.form)
     # If the user is trying to log in
-    if(form.validate_on_submit()):
+    if( form.validate_on_submit() ):
         print('Login request')
-        # Checks the the information in the form is valid
+        # Search for the username in the database
+        user = User.query.filter_by(username=form.username.data).first()
+        # If the user is not found or the password is incorrect
+        if( user is None or not user.check_password(form.password.data) ):
+            flash('Invalid user information')
+            return redirect(url_for('login'))
+        # Log in the user (Only reaches here if the information is valid)
         flash("Login request for user {}".format(form.username.data))
+        login_user(user)
         return redirect(url_for('home'))
     # If the user is opening the webpage
     else:
         return render_template("login.html", form=form)
 
 
+# Endpoint for user logout
 @routes.route('/logout')
 @login_required
 def logout():
+    # Skip step if the user isn't logged in
+    if( current_user.is_authenticated ):
+        logout_user()
+    redirect(url_for('home'))
     print('Logout endpoint in development')
 
 
 # Route for the register page
 @routes.route("/register", methods=['GET', 'POST'])
 def register():
+    if( current_user.is_authenticated ):
+        return redirect(url_for('home'))
     form = RegistrationForm(request.form)
     # If the user is trying to register
     if( form.validate_on_submit() ):
         print('Register request')
         # Checks that the information in the form is valid
-        print("valid")
-        try:
-            # Add the user account into the database
-            # db.session.add(User(id=uuid.uuid3(),
-            #                     first_name=form.firstname,
-            #                     last_name=form.lastname,
-            #                     email=form.email,
-            #                     username=form.username,
-            #                     pass_hash=generate_password_hash(form.password)))
-            # db.session.commit()
-            flash('User {} registered'.format(form.username.data))
-            return redirect(url_for('login'))
-        except exc.IntegrityError:
-            return 'Some of the information entered clashes with the information in our database'
-        except:
-            return "There was an issue getting you registered"
-        print("invalid")
-        flash("Invalid user account")
-        return render_template("register.html", form=form)
+        valid = True
+
+        if(check_for_dup_email(form.email.data)):
+            valid = False
+            flash('That email is already taken')
+        if(check_for_dup_username(form.username.data)):
+            valid = False
+            flash('That username is already taken')
+        if(valid):
+            try:
+                user = User(first_name=form.firstname.data,
+                            last_name=form.lastname.data,
+                            email=form.email.data,
+                            username=form.username.data,
+                            pass_hash=generate_password_hash(form.password.data))
+                # Add the user account into the database
+                db.session.add(user)
+                # db.session.commit()
+                flash('User {} registered'.format(form.username.data))
+                db.session.commit()
+                return redirect(url_for('login'))
+            except:
+                return "There was an issue getting you registered"
+                return render_template("register.html", form=form)
     # If the user is visiting the webpage
     else:
         return render_template("register.html", form=form)
@@ -113,12 +127,12 @@ def page_not_found(e):
     return "404 Error page"
 
 
-# Route for registering a user
-@routes.route('/add/')
-def add_user(form):
-    print('Add user endpoint in development')
-    return'Add user endpoint in development'
-
+# Endpoint for user profiles
+@routes.route('/profile/<user_id>')
+@login_required
+def profile(user_id):
+    user = User.query(id=user_id).first()
+    return 'Profile pages in development'
 
 # Route for deleting a user
 @routes.route('/delete/')
@@ -126,3 +140,21 @@ def add_user(form):
 def delete_user():
     print('Delete user endpoint in development')
     return'Delete user endpoint in development'
+
+
+#Checks to see if there are duplicate emails
+def check_for_dup_email(email):
+    if(db.session.filter_by(email=email).first() == None):
+        # Invalid information
+        return True
+    #Valid information
+    return False
+
+#Checks to see if there are duplicate emails
+def check_for_dup_username(username):
+    print()
+    if(User.query.filter_by(username=username).first_or_404() == None):
+        # Invalid information
+        return True
+    #Valid information
+    return False

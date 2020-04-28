@@ -1,13 +1,16 @@
 from flask import Flask
 from flaskr import db, login_manager
-from flask_login import current_user, login_required
+from flask_login import UserMixin
+from random import seed, randint
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 
+
 # Database model for the User entries
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'Users'
-    id = db.Column(db.INT, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.VARCHAR(20))
     last_name = db.Column(db.VARCHAR(30))
     email = db.Column(db.VARCHAR(50))
@@ -27,63 +30,35 @@ class User(db.Model):
     def get_username(self):
         return self.username
 
-    def get(self):
-        return self
+    # In-case the user has to change their password
+    def set_password(self, password):
+        self.pass_hash = generate_password_hash(password,
+                                                method='sha256')
 
+    # Check if the input password matches the stored password hash
+    def check_password(self, password):
+        return check_password_hash(self.pass_hash, password)
+
+    def __init__(self, first_name, last_name, email, pass_hash, username):
+        used = True
+        # Generate a random id for the new user
+        while(used):
+            seed(32132)
+            id = randint(1, 4294967295)
+            # If the number is not in use then the id id valid
+            # Else run the random number again
+            if (db.session.query(User).filter_by(id=id).first() == None):
+                used = False
+        self.id = id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.pass_hash = pass_hash
+        self.username = username
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
-
-
-# # Database entries for the daily stock report entries
-# class StockEntry(db.Model):
-#     __tablename__ = 'StockEntry'
-#     transaction_id = db.Column(db.INT)
-#     symbol = db.Column(db.VARCHAR(6))
-#     date = db.Column(db.VARCHAR(10))
-#     open_val = db.Column(db.FLOAT)
-#     high_val = db.Column(db.FLOAT)
-#     low_val = db.Column(db.FLOAT)
-#     close_val = db.Column(db.FLOAT)
-#     volume = db.Column(db.REAL)
-#
-#     # Functions to return values
-#     def get_stock_id(self):
-#         return self.stock_id
-#
-#     def get_symbol(self):
-#         return self.symbol
-#
-#     def get_date(self):
-#         return self.date
-#
-#     def get_open(self):
-#         return self.open_val
-#
-#     def get_close(self):
-#         return self.close_val
-#
-#     def get_high(self):
-#         return self.high_val
-#
-#     def get_low(self):
-#         return self.low_val
-#
-#     def get_vol(self):
-#         return self.volume
-#
-#
-# # Database model for the stock entries
-# class Stock(db.Model):
-#     __tablename__ = 'StockID'
-#     stock_id = db.Column(db.INT, primary_key=True)
-#     symbol = db.Column(db.VARCHAR(6), unique=True)
-#
-#     # Functions to return values
-#     def get_stock_id(self):
-#         return self.stock_id
-#
-#     def get_symbol(self):
-#         return self.symbol
-#

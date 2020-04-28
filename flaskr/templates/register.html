@@ -10,16 +10,18 @@
 <body>
 
 	<div id="header">
-			<div id="logo">
-				<a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
-			</div>
-			<ul>
-				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
-                <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
-				<li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
-				<li><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
-				<li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
-			</ul>
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <li><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
+            <!--Doesn't need the if else for profile button because user-->
+            <!--cannot get here when logged in-->
+            <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+        </ul>
 	</div>
     <div class="container">
         <section id="content">
@@ -30,26 +32,51 @@
                 <div>
                     <!--firstname value for the form -->
                     {{ form.firstname(id="firstname", placeholder="First name") }}
+                    {% if form.firstname.errors %}
+                        <ul class="errors">
+                            {% for error in form.firstname.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
 
                 <div>
                     <!--lastname value for the form -->
                     {{ form.lastname(id="lastname", placeholder="Last name") }}
+                    {% if form.lastname.errors %}
+                      <ul class="errors">
+                            {% for error in form.lastname.errors %}<li>{{ error }}</li>{% endfor %}
+                      </ul>
+                    {% endif %}
                 </div>
 
                 <div>
                     <!--email value for the form -->
                     {{ form.email(id="email", placeholder="Email") }}
+                    {% if form.email.errors %}
+                        <ul class="errors">
+                            {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
 
                 <div>
                     <!--username value for the form -->
                     {{ form.username(id="username", placeholder="Username") }}
+                    {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
 
                 <div>
                     <!--password value for the form -->
                     {{ form.password(id="password", placeholder="Password") }}
+                    {% if form.password.errors %}
+                        <ul class="errors">
+                            {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
 
                 <div>
