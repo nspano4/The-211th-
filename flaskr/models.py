@@ -43,13 +43,12 @@ class User(db.Model, UserMixin):
         used = True
         # Generate a random id for the new user
         while(used):
-            id = randint(1, 4294967295)
-            print(id)
+            rand = randint(1, 4294967295)
             # If the number is not in use then the id id valid
             # Else run the random number again
-            if (db.session.query(User).filter_by(id=id).first() == None):
+            if (db.session.query(User).filter_by(id=rand).first() == None):
                 used = False
-        self.id = id
+        self.id = rand
         self.first_name = first_name
         self.last_name = last_name
         self.email = email

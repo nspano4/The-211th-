@@ -25,7 +25,7 @@
 	</div>
     <div class="container">
         <section id="content">
-            <form action="{{ url_for('routes.login') }}", method="post">
+            <form action="{{ url_for('routes.login') }}" method="post">
                 {{ form.csrf_token }}
                 <h1>Enter your login information</h1>
                 <div>
@@ -34,17 +34,17 @@
                 <div>
                     {{ form.password(placeholder="Password") }}
                 </div>
+                <!--Print flashed messages-->
+                <!--Should only be used when the user enters bad information-->
+                {% for message in get_flashed_messages() %}
+                    <p>{{ message }}</p>
+                {% endfor %}
                 <div>
                     {{ form.submit() }}
-                    <a href="#">Lost your password?</a>
+                    <a href="{{ url_for('routes.forgot_password') }}">Lost your password?</a>
                     <a href="{{ url_for("routes.register") }}">Register</a>
                 </div>
             </form><!-- form -->
-            <!--Print flashed messages-->
-            <!--Should only be used when the user enters bad information-->
-            {% for message in get_flashed_messages() %}
-                <p>{{ message }}</p>
-            {% endfor %}
         </section><!-- content -->
     </div><!-- container -->
 
