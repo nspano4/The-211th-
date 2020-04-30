@@ -38,6 +38,10 @@ def services():
 def products():
     return render_template("products.html")
 
+@app.route("/user")
+def user():
+    return render_template("userPage.html")
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -48,7 +52,9 @@ def login():
         return redirect('/')
     return render_template("login.html", form=form)
 
-@app.route("/register", methods=['GET', 'POST'])
+
+
+@app.route("/userPage", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     print("Register submit")
@@ -57,7 +63,7 @@ def register():
         flash('User {} registered'.format(form.username.data))
         redirect('/')
     # Passes the registration form to the page
-    return render_template("register.html", form=form)
+    return render_template("userPage.html", form=form)
 
 if(__name__=="__main__"):
     #app.run(host=='0.0.0.0', port=5000)
