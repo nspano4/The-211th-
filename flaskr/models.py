@@ -1,7 +1,7 @@
 from flask import Flask
 from flaskr import db, login_manager
 from flask_login import UserMixin
-from random import seed, randint
+from random import randint
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)

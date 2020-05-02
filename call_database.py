@@ -1,10 +1,9 @@
 # Script to retrieve data from our Azure Database
 
 import os
-import pyodbc
 import csv
 from flask import Flask
-from configparser import ConfigParser
+from flaskr import cnxn
 # OS file separator
 sep = os.path.sep
 # Root directory
@@ -14,27 +13,10 @@ root = os.getcwd()
 # Removes the need for hard-coding the path
 machineLearningDir = root + sep + "MachineLearning" + sep
 
-config = ConfigParser()
-
-# Locates the database config file
-config.read(root + sep + "config.ini")
-
-# Reads the SQL database information from the config file
-server = config.get('config', 'server')
-database = config.get('config', 'hostname')
-username = config.get('config', 'username')
-password = config.get('config', 'password')
-
-
-# SQL Database Connection
-cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};' +
-                      'SERVER=' + server +
-                      ';DATABASE=' + database +
-                      ';UID=' + username +
-                      ';PWD=' + password)
 cursor = cnxn.cursor()
 
 app = Flask(__name__)
+
 
 # *************GET ALL DATA***************************************
 def pullAllData():

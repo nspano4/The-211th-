@@ -1,7 +1,28 @@
 import os
+import pyodbc
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from configparser import ConfigParser
+
+config = ConfigParser()
+
+# Locates the database config file
+config.read(os.getcwd() + os.path.sep + "config.ini")
+
+# Reads the SQL database information from the config file
+server = config.get('config', 'server')
+database = config.get('config', 'hostname')
+username = config.get('config', 'username')
+password = config.get('config', 'password')
+
+
+# SQL Database Connection
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};' +
+                      'SERVER=' + server +
+                      ';DATABASE=' + database +
+                      ';UID=' + username +
+                      ';PWD=' + password)
 
 db = SQLAlchemy()
 login_manager = LoginManager()
