@@ -1,5 +1,3 @@
-#!/usr/bin/python -m
-
 from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
 from flaskr.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_required, login_user, logout_user
