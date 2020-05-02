@@ -4,8 +4,7 @@ import os
 import pyodbc
 import csv
 from flask import Flask
-import configparser
-
+from configparser import ConfigParser
 # OS file separator
 sep = os.path.sep
 # Root directory
@@ -15,7 +14,7 @@ root = os.getcwd()
 # Removes the need for hard-coding the path
 machineLearningDir = root + sep + "MachineLearning" + sep
 
-config = configparser.ConfigParser()
+config = ConfigParser()
 
 # Locates the database config file
 config.read(root + sep + "config.ini")
@@ -44,7 +43,7 @@ def pullAllData():
     fetch = cursor.fetchall()
     cursor.commit()
 # #This iterates through all the rows of data and prints on console
-    with open("C:/Users/Ethan Hudak/PycharmProjects/The-211th-/MachineLearning/AllData.csv", "w", newline='') as csvfile:
+    with open(machineLearningDir + "AllData.csv", "w", newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')
         spamwriter.writerow({'Index,Stock,Date,Open,High,Low,Close,Volume'})
         for i in fetch:
@@ -115,36 +114,3 @@ def pullAllStockData(symbol):
                 newString = newString.replace("[", "")
                 newString = newString.replace("]", "")
                 spamwriter.writerow({newString})
-
-
-# Check if the email is already in the database
-# Used in auth.py for verification
-def check_email(email):
-    query = "SELECT EMAIL FROM StockAdviseDB.dbo.Users WHERE EMAIL=" + email
-    cursor.execute(query)
-    cursor.fetchall()
-    if(cursor.rowcount > 0):
-        return False
-    else:
-        return True
-
-
-# Check if the email is already in the database
-# Used in auth.py for verification
-def check_username(username):
-    query =  "SELECT USERNAME FROM StockAdviseDB.dbo.Users WHERE USERNAME=" + username
-    cursor.execute(query)
-    cursor.fetchall()
-    if(cursor.rowcount > 0):
-        return False
-    else:
-        return True
-
-#SQL Database Connection
-server = 'tcp:sa-server2.database.windows.net'
-database = 'StockAdviseDB'
-username = 'adminSA'
-password = 'stock-123'
-cnxn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
-cursor = cnxn.cursor()

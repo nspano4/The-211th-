@@ -10,6 +10,7 @@ setup(
         'numpy',
         'pandas',
         'pyodbc',
-        'flask-socketio'
+        'flask-socketio',
+        'alphavantage'
     ]
 )

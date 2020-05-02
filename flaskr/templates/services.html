@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Template by freewebsitetemplates.com -->
 <html>
 <head>
 <meta charset="utf-8" />
@@ -30,16 +29,22 @@
 </head>
 
 	<div id="header">
-			<div id="logo">
-				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
-			</div>
-			<ul>
-				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('about') }}"><span>our team</span></a></li>
-				<li class="selected"><a href="{{ url_for('services') }}"><span>Top Stocks</span></a></li>
-				<li><a href="{{ url_for('products') }}"><span>search</span></a></li>
-				<li><a href="{{ url_for('login') }}"><span>login</span></a> </li>
-			</ul>
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li class="selected"><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <li><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
+            <!--If the user is logged in the profile button shows-->
+            <!--Else show the login button-->
+            {% if current_user.is_authenticated%}
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+            {% else  %}
+                <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+            {% endif %}
+        </ul>
 	</div>
 
 
@@ -57,7 +62,7 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			Confidence of Prediction: <b>{{msft_con}}%</b>
-			<div></br></div>
+			<div><br></div>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			Tomorrow's Predicted Close For AAPL: <b>{{aapl_pred}}</b>
@@ -66,7 +71,7 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			Confidence of Prediction: <b>{{aapl_con}}%</b>
-			<div></br></div>
+			<div><br></div>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			Tomorrow's Predicted Close For GOOGL: <b>{{googl_pred}}</b>
@@ -75,7 +80,7 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;
 			Confidence of Prediction: <b>{{googl_con}}%</b>
-			<div></br></div>
+			<div><br></div>
 
 		</div>
 		<!-- load the d3.js library -->

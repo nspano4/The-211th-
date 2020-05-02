@@ -1,20 +1,21 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask import Flask
+from flaskr import db, login_manager
+from flask_login import UserMixin
+from random import seed, randint
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 # Database model for the User entries
-class User(db.Model):
+class User(db.Model, UserMixin):
+    __tablename__ = 'Users'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(20))
-    last_name = db.Column(db.String(30))
-    email = db.Column(db.String(50))
-    pass_hash = db.Column(db.String(100))
-    username = db.Column(db.String(25))
+    first_name = db.Column(db.VARCHAR(20))
+    last_name = db.Column(db.VARCHAR(30))
+    email = db.Column(db.VARCHAR(50))
+    pass_hash = db.Column(db.VARCHAR(100))
+    username = db.Column(db.VARCHAR(25))
 
     # Functions to return values
     def get_id(self):
@@ -29,55 +30,34 @@ class User(db.Model):
     def get_username(self):
         return self.username
 
-    def get(self):
-        return self
+    # In-case the user has to change their password
+    def set_password(self, password):
+        self.pass_hash = generate_password_hash(password,
+                                                method='sha256')
 
+    # Check if the input password matches the stored password hash
+    def check_password(self, password):
+        return check_password_hash(self.pass_hash, password)
 
-# Database entries for the daily stock report entries
-class StockEntryDay(db.Model):
-    stock_id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.String(6))
-    date = db.Column(db.String(10))
-    open_val = db.Column(db.Float)
-    close_val = db.Column(db.Float)
-    high_val = db.Column(db.Float)
-    lov_val = db.Column(db.Float)
-    volume = db.Column(db.Integer)
+    def __init__(self, first_name, last_name, email, pass_hash, username):
+        used = True
+        # Generate a random id for the new user
+        while(used):
+            rand = randint(1, 4294967295)
+            # If the number is not in use then the id id valid
+            # Else run the random number again
+            if (db.session.query(User).filter_by(id=rand).first() == None):
+                used = False
+        self.id = rand
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.pass_hash = pass_hash
+        self.username = username
 
-    # Functions to return values
-    def get_stock_id(self):
-        return self.stock_id
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
-    def get_symbol(self):
-        return self.symbol
-
-    def get_date(self):
-        return self.date
-
-    def get_open(self):
-        return self.open_val
-
-    def get_close(self):
-        return self.close_val
-
-    def get_high(self):
-        return self.high_val
-
-    def get_low(self):
-        return self.lov_val
-
-    def get_vol(self):
-        return self.volume
-
-
-# Database model for the stock entries
-class Stock(db.Model):
-    stock_id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.String(6))
-
-    # Functions to return values
-    def get_stock_id(self):
-        return self.stock_id
-
-    def get_symbol(self):
-        return self.symbol
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
