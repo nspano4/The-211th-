@@ -19,20 +19,21 @@ routes = Blueprint('routes', __name__)
 ######################################################################################################
 ### CODE FOR CALLING DB AND PARSING INTO JSON OBJECT TO BE PASSED INTO JAVASCRIPT ###
 
-# #Read Config File
-# config = configparser.ConfigParser()
-# config.read("config.ini")
-# print(config['CONFIG']['server'])
-
+# Read Config File
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 #Call Database For MSFT Data
-server = 'tcp:sa-server2.database.windows.net'
-database = 'StockAdviseDB'
-username = 'adminSA'
-password = 'stock-123'
+server = config.get('config', 'server')
+database = config.get('config', 'hostname')
+username = config.get('config', 'username')
+password = config.get('config', 'password')
 cnxn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
-# cursor = cnxn.cursor()
+    'DRIVER={ODBC Driver 17 for SQL Server};' +
+    'SERVER=' + server +
+    ';DATABASE=' + database +
+    ';UID=' + username +
+    ';PWD=' + password)
 
 #****************GET DATA FOR A SINGLE STOCK**********************
 msft_data = []
