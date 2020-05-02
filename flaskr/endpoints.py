@@ -1,15 +1,11 @@
-#!/usr/bin/python -m
-
-from flask import Flask, render_template, redirect, flash, request, url_for, Blueprint
+from flask import render_template, redirect, flash, request, url_for, Blueprint
 from flaskr.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_required, login_user, logout_user
 from flaskr.models import User
 from werkzeug.security import generate_password_hash
-from flaskr import login_manager, db
+from flaskr import db, cnxn
 import os
-import pyodbc
 import json
-import configparser
 
 sep = os.path.sep
 
@@ -18,22 +14,6 @@ routes = Blueprint('routes', __name__)
 
 ######################################################################################################
 ### CODE FOR CALLING DB AND PARSING INTO JSON OBJECT TO BE PASSED INTO JAVASCRIPT ###
-
-# Read Config File
-config = configparser.ConfigParser()
-config.read("config.ini")
-
-#Call Database For MSFT Data
-server = config.get('config', 'server')
-database = config.get('config', 'hostname')
-username = config.get('config', 'username')
-password = config.get('config', 'password')
-cnxn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};' +
-    'SERVER=' + server +
-    ';DATABASE=' + database +
-    ';UID=' + username +
-    ';PWD=' + password)
 
 #****************GET DATA FOR A SINGLE STOCK**********************
 msft_data = []
