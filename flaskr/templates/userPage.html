@@ -12,11 +12,11 @@
 				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
 			</div>
 			<ul>
-				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('about') }}"><span>our team</span></a></li>
-				<li><a href="{{ url_for('services') }}"><span>top stocks</span></a></li>
-				<li><a href="{{ url_for('products') }}"><span>search</span></a></li>
-				<li class="selected"><a href="{{ url_for('user') }}"><span>My Account</span></a> </li>
+				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+				<li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
 			</ul>
 	</div>
 
@@ -25,11 +25,22 @@
 		<div class="about">
 			<h1>My Account</h1>
 			<div>
+				<!-- Unneeded because endpoint is managed so that user
+				        cannot get here if they are not logged in
 				<h2 id="AccName">Error: No User Logged in</h2>
 				<img id="ProfilePicture" src="../static/images/userProfilePictureDefault.jpg" width="350" height="350" alt="" />
 				<p id="UserDescription1">Error: No User Logged in</p>
+				-->
+                <!--Gets the username of the currently logged in user-->
+                {{ current_user.username }}
 				<div></div>
+				<img id="ProfilePicture" src="../static/images/userProfilePictureDefault.jpg" width="250" height="250" alt="" />
+				<script>
+                    var userDesc = "You are currently following the companies: Google, Apple, and Microsoft";
+					document.getElementById("UserDescription1").innerHTML = userDesc;
+                </script>
 
+                <!--
 				<script>
 					var name = "Ganesh Baliga";
 					var userDesc = "You are currently following the companies: Google, Apple, and Microsoft";
@@ -39,7 +50,7 @@
 					document.getElementById("UserDescription1").innerHTML = userDesc;
 					document.getElementById("ProfilePicture").src = pfp;
 				</script>
-
+                    -->
 
 			</div>
 		</div>
