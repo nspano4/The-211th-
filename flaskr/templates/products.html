@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Template by freewebsitetemplates.com -->
 <html>
 <head>
 <meta charset="utf-8" />
@@ -9,14 +8,21 @@
 <body>
 	<div id="header">
 			<div id="logo">
-				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
-			</div>		
+				<a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+			</div>
 			<ul>
-				<li><a href="{{ url_for('home') }}"><span>home</span></a></li>
-				<li><a href="{{ url_for('about') }}"><span>our team</span></a></li>
-				<li><a href="{{ url_for('services') }}"><span>top stocks</span></a></li>
-				<li class="selected"><a href="{{ url_for('products') }}"><span>search</span></a></li>
-				<li><a href="{{ url_for('login') }}"><span>login</span></a> </li>
+				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+				<li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+				<li class="selected"><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
+				<!--If the user is logged in the profile button shows-->
+                <!--Else show the login button-->
+                {% if current_user.is_authenticated%}
+                    <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                    <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
+                {% else  %}
+                    <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+			    {% endif %}
 			</ul>
 	</div>
 	<div id="body">
@@ -25,48 +31,10 @@
 			<div class="topnav">
   				<input type="text" placeholder="Search..">
 			</div>
+        </div>
+    </div>
 
 
-
-		<div id="footer">
-			<div>
-				<div>
-					<h3>america</h3>
-					<ul>
-						<li>457-380-1654 main</li>				
-						<li>257-301-9417 toll free</li>
-					</ul>			
-				</div>		
-				<div>
-					<h3>europe</h3>
-					<ul>
-						<li>457-380-1654 main</li>				
-						<li>257-301-9417 toll free</li>
-					</ul>			
-				</div>	
-				<div>
-					<h3>canada</h3>
-					<ul>
-						<li>457-380-1654 main</li>				
-						<li>257-301-9417 toll free</li>
-					</ul>			
-				</div>	
-				<div>
-					<h3>middle east</h3>
-					<ul>
-						<li>457-380-1654 main</li>				
-						<li>257-301-9417 toll free</li>
-					</ul>			
-				</div>	
-				<div>
-					<h3>follow us:</h3>
-					<a class="facebook" href="http://facebook.com/freewebsitetemplates" target="_blank">facebook</a>		
-					<a class="twitter" href="http://twitter.com/fwtemplates" target="_blank">twitter</a>
-				</div>	
-			</div>
-			<div>
-				<p>&copy Copyright 2020. All rights reserved</p>
-			</div>
 		</div>
 	</body>
 </html>

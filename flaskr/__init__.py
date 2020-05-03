@@ -1,55 +1,51 @@
 import os
+import pyodbc
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from configparser import ConfigParser
 
-from flask import Flask, render_template
+config = ConfigParser()
+
+# Locates the database config file
+config.read(os.getcwd() + os.path.sep + "config.ini")
+
+# Reads the SQL database information from the config file
+server = config.get('config', 'server')
+database = config.get('config', 'hostname')
+username = config.get('config', 'username')
+password = config.get('config', 'password')
 
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
+# SQL Database Connection
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};' +
+                      'SERVER=' + server +
+                      ';DATABASE=' + database +
+                      ';UID=' + username +
+                      ';PWD=' + password)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+db = SQLAlchemy()
+login_manager = LoginManager()
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
-    @app.route("/")
-    def home():
-        return render_template("home.html")
+def create_app():
 
-    @app.route("/about")
-    def about():
-        return render_template("about.html")
+    app = Flask(__name__)
+    # Points where to look for the database
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    # Tells the app to not track all the modifications to the database
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = os.urandom(32)
 
-    @app.route("/contact")
-    def contact():
-        return render_template("contact.html")
+    db.init_app(app)
 
-    @app.route("/services")
-    def services():
-        return render_template("services.html")
+    # Initialize the login for the users
+    from flaskr.models import load_user
+    login_manager.init_app(app)
+    login_manager.user_loader(load_user)
 
-    @app.route("/products")
-    def products():
-        return render_template("products.html")
-
-    @app.route("/login")
-    def login():
-        return render_template("login.html")
-
-    @app.route("/signup")
-    def login():
-        return render_template("register.html")
+    # Initialize the routes for the website
+    from flaskr.endpoints import routes
+    app.register_blueprint(routes)
 
     return app
