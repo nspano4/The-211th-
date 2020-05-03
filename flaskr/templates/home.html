@@ -16,11 +16,11 @@
             <li class="selected"><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
             <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
             <li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
-            <li><a href="{{ url_for('routes.products') }}"><span>search</span></a></li>
             <!--If the user is logged in the profile button shows-->
             <!--Else show the login button-->
             {% if current_user.is_authenticated%}
                 <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
             {% else  %}
                 <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
             {% endif %}

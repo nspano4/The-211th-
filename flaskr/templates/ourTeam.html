@@ -21,6 +21,7 @@
             <!--Else show the login button-->
             {% if current_user.is_authenticated%}
                 <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
             {% else  %}
                 <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
             {% endif %}
