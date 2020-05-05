@@ -3,7 +3,6 @@ from call_database import *
 from MachineLearning.Scheduler import *
 
 
-
 # The main class will allow you to test some of the functionality of our project.
 def main():
     pullAllData()
@@ -14,8 +13,6 @@ def main():
     predictTomorrowValue("AAPL")
     predictTomorrowValue("MSFT")
     predictTomorrowValue("GOOGL")
-
-
 
 
 if __name__ == "__main__":
