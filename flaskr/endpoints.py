@@ -1,3 +1,4 @@
+from alembic.autogenerate import render
 from flask import render_template, redirect, flash, request, url_for, Blueprint
 from flaskr.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_required, login_user, logout_user
@@ -201,7 +202,7 @@ def page_not_found(e):
 @login_required
 def profile():
     if(current_user.is_authenticated):
-        return 'Profile pages in development'
+        return render_template('userPage.html')
     return redirect(url_for('routes.home'))
 
 # Route for deleting a user

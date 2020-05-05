@@ -3,9 +3,9 @@ import pandas as pd
 from sklearn import linear_model
 import sklearn
 import pickle
-import datetime
 import random
 from call_database import *
+from MachineLearning.Confidence import *
 import os
 
 dir = os.getcwd()
@@ -13,34 +13,28 @@ sep = os.path.sep
 
 # Dynamic path to the MachineLearning directory
 # Removes the need for hard-coding the path
-machineLearningDir = dir + sep + "MachineLearning" + sep
+machineLearningDir = root + sep + "MachineLearning" + sep
 
 def stockData(stock):
     while True:
-        #print('Please select one of the following:')
-        #print('GOOGL')
-        #print('AAPL')
-        #print('MSFT')
-        #stock = input()
         if str(stock).casefold() == 'GOOGL'.casefold():
-            database.pullTodaysStockData('GOOGL')
+            pullTodaysStockData('GOOGL')
             data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
-            return data, 'GOOGL'
+            return data
         elif str(stock).casefold() == 'AAPL'.casefold():
             pullTodaysStockData('AAPL')
             data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
-            return data, 'AAPL'
+            return data
         elif str(stock).casefold() == 'MSFT'.casefold():
             pullTodaysStockData('MSFT')
             data = pd.read_csv(machineLearningDir + "today.csv", sep=',')
-            return data, 'MSFT'
+            return data
         else:
             print('We Do Not Follow ' + str(stock) + ' At This Time. Please Try Again.')
 
-
 def train():
 
-    data = pd.read_csv( machineLearningDir + "AllData.csv")
+    data = pd.read_csv(machineLearningDir + "AllData.csv")
 
     data = data[["Open", "High", "Low", "Close", "Volume"]]
 
@@ -68,7 +62,6 @@ def train():
             with open(machineLearningDir + "Best.txt", "w+") as g:
                 g.write(str(best))
 
-
 def test(symbol):
     data, stock = stockData(symbol)
 
@@ -93,23 +86,14 @@ def test(symbol):
         if predicted[x] < 0:
             predicted[x] = -1 * predicted[x]
         print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
-        currentDate = datetime.datetime.now().date()
-        currentDate = str(currentDate)
-        with open(machineLearningDir + 'predicted_' + str(stock) + '.csv',
-                  mode='w') as predicted_file:
-            fieldname = ['Date', 'Predicted Close']
-            predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)
-            predicted_writer.writeheader()
-            predicted_writer.writerow({'Date': currentDate, 'Predicted Close': predicted[x]})
 
-
-def predictValue(variable, symbol):
-    data, stock = stockData(symbol)
-
+def predictTomorrowValue(symbol):
+    data = stockData(symbol)
+    tomorrow = printNextDate(data.get(['Date']))
     data = data[["Open", "High", "Low", "Close", "Volume"]]
 
-    x = np.array(data.drop([str(variable)], 1))
-    y = np.array(data[str(variable)])
+    x = np.array(data.drop(["Close"], 1))
+    y = np.array(data["Close"])
     x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.4)
 
     # This section will test the current stock data with the model
@@ -120,11 +104,16 @@ def predictValue(variable, symbol):
     for x in range(len(predicted)):
         if predicted[x] < 0:
             predicted[x] = -1 * predicted[x]
-        print("Predicted: " + str(predicted[x]), "Actual: " + str(y_test[x]))
 
+        with open(machineLearningDir + 'predicted_' + str(symbol) + '.csv',
+                  mode='a') as predicted_file:
+            fieldname = ['Symbol', 'Date', 'Predicted Close']
+            predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)
+            #predicted_writer.writeheader()
+            predicted_writer.writerow({'Symbol': symbol, 'Date': tomorrow, 'Predicted Close': predicted[x]})
+            pushPredictions(symbol, tomorrow, predicted[x], callConfidence(symbol))
 
 def tomorrowValues(symbol):
-    #temp, stock = pullAllStockData(symbol)
     with open(machineLearningDir + "All" + str(symbol) + "Data.csv", "r",
               newline="") as csvfile1:
         spamreader = csv.reader(csvfile1, delimiter=',')
@@ -141,11 +130,9 @@ def tomorrowValues(symbol):
         print("Predicted Open: " + predictOpen)
         print(values[1][6])
 
-        #prevOpen = values[1][3]
         prevHigh = float(values[1][4])
         prevLow = float(values[1][5])
         prevClose = float(values[1][6])
-        #prevVolume = values[1][7]
 
         predictHigh = 0
         predictLow = 0
@@ -172,3 +159,41 @@ def tomorrowValues(symbol):
         spamwriter.writerow({"Open,High,Low,Close,Volume"})
         spamwriter.writerow({str(predictOpen) + "," + str(predictHigh) + "," + str(predictLow) + ", 0, 0"})
     csvfile2.close()
+
+def printNextDate(Date):
+    today = str(Date)
+    today = today.split(sep=' ')
+    today = today[13]
+    today = today.split(sep='-')
+    tomorrow = ''
+    if today[1].endswith('02'):
+        if today[2].endswith('28'):
+            tomorrow = today[0] + '-0' + str(int(today[1]) + 1) + '-01'
+        else:
+            tomorrow = today[0] + '' + today[1] + str(int(today[2]) + 1)
+        return tomorrow
+    if today[1].endswith('01') or today[1].endswith('03')\
+            or today[1].endswith('05') or today[1].endswith('07')\
+            or today[1].endswith('08') or today[1].endswith('10')\
+            or today[1].endswith('12'):
+        if today[2].endswith('31'):
+            if today[1].startswith('12'):
+                tomorrow = today[0] + '-01-01'
+            else:
+                if today[1].startswith('0'):
+                    tomorrow = today[0] + '-0' + str(int(today[1]) + 1) + '-01'
+        else:
+            tomorrow = today[0] + '-' + today[1] + '-' + str(int(today[2]) + 1)
+        return tomorrow
+    else:
+        if today[2].startswith('0'):
+            today1 = today[2].split('0')
+            temp = today1
+            if int(temp[1]) == 9:
+                tomorrow = today[0] + '-' + today[1] + '-' + str(int(today[2]) + 1)
+            else:
+                tomorrow = today[0] + '-' + today[1] + '-0' + str(int(today[2]) + 1)
+        else:
+            if today[2].startswith('30'):
+                tomorrow = today[0] + '-0' + str(int(today[1]) + 1) + '-01'
+        return tomorrow

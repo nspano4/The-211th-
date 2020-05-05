@@ -18,20 +18,25 @@ def schedule():
     currentMinute = datetime.datetime.now().minute
     currentSecond = datetime.datetime.now().second
     datetime.datetime(int(year), int(month), int(day),
-        currentHour, currentMinute, currentSecond)
+                      currentHour, currentMinute, currentSecond)
     currentDay = datetime.datetime.today().weekday()
 
     if currentDay == calendar.FRIDAY:
         print('STOCK MARKET CLOSED on [Friday]')
+        time.sleep(60)
+        return False
     if currentDay == calendar.SATURDAY:
         print('STOCK MARKET CLOSED on [Saturday]')
+        time.sleep(60)
+        return False
     if currentDay == calendar.SUNDAY:
         print('STOCK MARKET CLOSED on [Sunday]')
+        time.sleep(60)
+        return False
     if currentHour >= 16 and currentMinute >= 0:
         print('STOCK MARKET CLOSED: ' + str(currentHour) + ':' + str(currentMinute))
-        waitTime = 63000
-        currentTimeInSecs = (currentHour * 3600) + (currentMinute * 60)
-        waitTime = waitTime - (waitTime - currentTimeInSecs)
-        time.sleep(waitTime)
+        time.sleep(60)
+        return False
     print('Time is: ' + str(currentHour) + ':' + str(currentMinute))
     time.sleep(60)
+    return True
