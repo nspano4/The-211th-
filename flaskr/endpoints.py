@@ -1,4 +1,3 @@
-from alembic.autogenerate import render
 from flask import render_template, redirect, flash, request, url_for, Blueprint
 from flaskr.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_required, login_user, logout_user
@@ -39,7 +38,6 @@ def create_objects(symbol):
 
     data_obj = []
     for row in ndata:
-        # print(row)
         dict_row = {
             "symbol": '"' + row[1] + '"',
             "date": '"' + row[2] + '"',
@@ -48,9 +46,6 @@ def create_objects(symbol):
         data_obj.append(dict_row)
 
     stock_data = str(data_obj)
-    # print(msft_data)
-    # if symbol == 'MSFT':
-    #     msft_data = json.dumps(data_obj, indent=4)
     return stock_data
 
 def get_prediction(symbol):
