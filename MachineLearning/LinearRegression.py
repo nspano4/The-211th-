@@ -109,7 +109,6 @@ def predictTomorrowValue(symbol):
                   mode='a') as predicted_file:
             fieldname = ['Symbol', 'Date', 'Predicted Close']
             predicted_writer = csv.DictWriter(predicted_file, fieldnames=fieldname)
-            #predicted_writer.writeheader()
             predicted_writer.writerow({'Symbol': symbol, 'Date': tomorrow, 'Predicted Close': predicted[x]})
             pushPredictions(symbol, tomorrow, predicted[x], callConfidence(symbol))
 
